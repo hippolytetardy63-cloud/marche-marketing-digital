@@ -141,6 +141,100 @@
 
   // ------------------------------------------------- blocs alimentes en data
 
+  /* ===== Accueil : « À retenir » et tuiles vedettes ===== */
+
+  // Flèche et écart par rapport au relevé précédent. Le sens est dit en
+  // toutes lettres (▲/▼ et le chiffre), la couleur ne fait que l'appuyer.
+  function tendance(actuel, precedent, unite) {
+    if (precedent == null) return "";
+    var e = actuel - precedent;
+    if (e === 0) return "<span class='tendance stable'>= stable</span>";
+    return "<span class='tendance " + (e > 0 ? "hausse" : "baisse") + "'>" +
+      (e > 0 ? "▲ +" : "▼ −") + Math.abs(e) + (unite || "") + "</span>";
+  }
+
+  // Mini-courbe du nombre d'offres : une seule série, sans légende. Son
+  // échelle est resserrée sur les valeurs, ce que dit la note dessous.
+  function miniCourbe(valeurs) {
+    if (valeurs.length < 2) return "";
+    var L = 220, H = 48, min = Math.min.apply(null, valeurs), max = Math.max.apply(null, valeurs);
+    var pts = valeurs.map(function (v, i) {
+      var x = i / (valeurs.length - 1) * L;
+      var y = max === min ? H / 2 : H - 4 - (v - min) / (max - min) * (H - 8);
+      return x.toFixed(1) + "," + y.toFixed(1);
+    });
+    var dernier = pts[pts.length - 1].split(",");
+    return "<svg class='mini-courbe' viewBox='0 0 " + L + " " + H + "' role='img' " +
+      "aria-label='Évolution du nombre d’offres : de " + valeurs[0] + " à " + valeurs[valeurs.length - 1] + "'>" +
+      "<polyline points='" + pts.join(" ") + "'/>" +
+      "<circle cx='" + dernier[0] + "' cy='" + dernier[1] + "' r='3.5'/></svg>";
+  }
+
+  function poserVedette(el) {
+    var S = D.serie || [], st = D.stats, miens = D.mes_departements;
+    var der = S[S.length - 1] || {}, prec = S.length > 1 ? S[S.length - 2] : null, prem = S[0];
+    var evolution = prem && prem.total ? Math.round((st.total - prem.total) / prem.total * 100) : null;
+    var petites = [
+      { v: st.cdi, l: "en CDI (" + st.cdi_pct + " %)", t: tendance(der.cdi, prec && prec.cdi) }
+    ];
+    Object.keys(miens).forEach(function (code) {
+      var n = (der.mes_zones || {})[code];
+      if (n == null) n = D.par_departement[code] || 0;
+      petites.push({ v: n, l: "dans le " + miens[code], classe: n === 0 ? "creux" : "",
+                     t: tendance(n, prec && (prec.mes_zones || {})[code]) });
+    });
+    var sal = D.salaires, cible = sal && sal.reperes.filter(function (r) { return r.nom === "Ma cible"; })[0];
+    if (sal) {
+      petites.push({ v: euros(sal.mediane), l: "salaire médian des CDI" +
+        (cible ? " · ma cible : " + euros(cible.montant) : "") });
+    }
+    el.className = "vedette";
+    el.innerHTML =
+      "<div class='kpi tuile-vedette'>" +
+        "<div class='etiquette'>Offres de chargé de marketing digital en France</div>" +
+        "<div class='valeur'>" + st.total + " " + tendance(st.total, prec && prec.total) + "</div>" +
+        (evolution != null && prem ? "<div class='etiquette'>" + (evolution > 0 ? "+" : evolution < 0 ? "−" : "") + Math.abs(evolution) +
+          " % depuis le " + formaterDate(prem.date) + " · " + S.length + " relevés</div>" : "") +
+        miniCourbe(S.map(function (p) { return p.total; })) +
+        "<div class='note-mini'>Échelle resserrée : la courbe ne part pas de zéro.</div>" +
+      "</div>" +
+      "<div class='petites-tuiles'>" + petites.map(function (p) {
+        return "<div class='kpi " + (p.classe || "") + "'><div class='valeur'>" + p.v + "</div>" +
+          "<div class='etiquette'>" + p.l + "</div>" + (p.t ? "<div class='etiquette'>" + p.t + "</div>" : "") + "</div>";
+      }).join("") + "</div>";
+  }
+
+  // Trois phrases écrites à partir des données du jour : aucune n'est
+  // figée, chacune se recalcule à chaque relevé.
+  function poserARetenir(el) {
+    var phrases = [], miens = D.mes_departements, codes = Object.keys(miens);
+    if (codes.length === 2) {
+      var a = D.par_departement[codes[0]] || 0, b = D.par_departement[codes[1]] || 0;
+      var fort = a >= b ? 0 : 1, faible = 1 - fort;
+      var n = [a, b];
+      phrases.push(a === b
+        ? "Mes deux zones font jeu égal : " + a + " offre" + (a > 1 ? "s" : "") + " chacune."
+        : "Le " + miens[codes[fort]] + " compte " + n[fort] + " offre" + (n[fort] > 1 ? "s" : "") +
+          ", le " + miens[codes[faible]] + " " + n[faible] + " : c'est le " + miens[codes[fort]] + " qui porte ma recherche.");
+    }
+    var M = D.mots_metier;
+    if (M && M.mots.length) {
+      var m = M.mots[0];
+      phrases.push("« " + m.nom + " » est citée dans " + m.apres_pct + " % des offres, contre " +
+        m.avant_pct + " % le " + formaterDate(M.avant.date) +
+        (m.lecture === "a_confirmer" ? " — un signal encore à confirmer." : "."));
+    }
+    var S = D.salaires, cible = S && S.reperes.filter(function (r) { return r.nom === "Ma cible"; })[0];
+    if (cible) {
+      phrases.push(cible.pct + " % des CDI qui affichent un salaire paient au moins ma cible de " +
+        euros(cible.montant) + ".");
+    }
+    if (!phrases.length) { el.remove(); return; }
+    el.className = "a-retenir";
+    el.innerHTML = "<p class='a-retenir-titre'>À retenir aujourd'hui</p><ul>" +
+      phrases.map(function (p) { return "<li>" + echapper(p).replace(/&#39;/g, "'") + "</li>"; }).join("") + "</ul>";
+  }
+
   function poserKpis(el) {
     var st = D.stats, parDep = D.par_departement, miens = D.mes_departements;
     var codes = Object.keys(miens);
@@ -1010,6 +1104,8 @@
     "cv": poserCv,
     "bouton-maj": poserBoutonMaj,
     "evolution": poserEvolution,
+    "vedette": poserVedette,
+    "a-retenir": poserARetenir,
     "mots-metier": poserMotsMetier,
     "salaires": poserSalaires,
     "comparaison-metiers": poserComparaisonMetiers,

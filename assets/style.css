@@ -572,6 +572,34 @@ td code, .contenu code { font-size: .85em; background: var(--accent-doux); color
 }
 
 
+/* ================= accueil : à retenir et tuiles vedettes ================= */
+
+.a-retenir {
+  background: var(--accent-doux); border: 1px solid var(--accent);
+  border-radius: 16px; padding: 16px 22px; margin-bottom: 18px;
+}
+.a-retenir-titre { margin: 0 0 6px; font-size: .74rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--accent); }
+.a-retenir ul { margin: 0; padding-left: 18px; }
+.a-retenir li { margin: 3px 0; font-size: .95rem; }
+
+.vedette { display: grid; grid-template-columns: 1.15fr 1fr; gap: 14px; margin-bottom: 18px; }
+.tuile-vedette { display: flex; flex-direction: column; justify-content: space-between; border-color: var(--accent); }
+.tuile-vedette .valeur { font-size: 3.6rem; margin: 6px 0 2px; display: flex; align-items: baseline; gap: 12px; }
+.petites-tuiles { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.petites-tuiles .kpi .valeur { font-size: 1.9rem; }
+.mini-courbe { width: 100%; height: 56px; margin-top: 12px; overflow: visible; }
+.mini-courbe polyline { fill: none; stroke: var(--barre); stroke-width: 2.4; stroke-linejoin: round; stroke-linecap: round; vector-effect: non-scaling-stroke; }
+.mini-courbe circle { fill: var(--barre); }
+.note-mini { font-size: .72rem; color: var(--texte-doux); margin-top: 4px; }
+.tendance { font-size: .8rem; font-weight: 650; letter-spacing: 0; white-space: nowrap; }
+.tendance.hausse { color: var(--accent); }
+.tendance.baisse { color: var(--alerte); }
+.tendance.stable { color: var(--texte-doux); }
+@media (max-width: 760px) {
+  .vedette { grid-template-columns: 1fr; }
+  .tuile-vedette .valeur { font-size: 3rem; }
+}
+
 /* ================= mots-cles ATS d'une offre ================= */
 
 .ats {
