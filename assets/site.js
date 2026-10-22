@@ -90,6 +90,93 @@
     return c;
   }
 
+  /* ===== Thème clair / sombre ===== */
+  // Le choix est retenu par le navigateur (localStorage) ; s'il est
+  // indisponible (navigation privée), le site reste simplement en sombre.
+  var SOLEIL = "M12 4V2M12 22v-2M4 12H2M22 12h-2M5.6 5.6 4.2 4.2M19.8 19.8l-1.4-1.4M5.6 18.4l-1.4 1.4M19.8 4.2l-1.4 1.4M12 16a4 4 0 1 0 0-8 4 4 0 0 0 0 8z";
+  var LUNE = "M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z";
+
+  function themeClair() { return document.documentElement.dataset.theme === "light"; }
+
+  function appliquerTheme(clair) {
+    if (clair) document.documentElement.dataset.theme = "light";
+    else delete document.documentElement.dataset.theme;
+    try { localStorage.setItem("theme", clair ? "clair" : "sombre"); } catch (e) { /* rien */ }
+    Array.prototype.forEach.call(document.querySelectorAll(".bouton-theme"), dessinerBoutonTheme);
+  }
+
+  function dessinerBoutonTheme(b) {
+    var clair = themeClair();
+    b.setAttribute("aria-label", clair ? "Passer en thème sombre" : "Passer en thème clair");
+    b.innerHTML = "<svg viewBox='0 0 24 24' aria-hidden='true'><path d='" + (clair ? LUNE : SOLEIL) + "'/></svg>" +
+      "<span>" + (clair ? "Sombre" : "Clair") + "</span>";
+  }
+
+  function boutonTheme() {
+    var b = document.createElement("button");
+    b.type = "button"; b.className = "bouton-theme";
+    b.addEventListener("click", function () { appliquerTheme(!themeClair()); });
+    dessinerBoutonTheme(b);
+    return b;
+  }
+
+  try { if (localStorage.getItem("theme") === "clair") document.documentElement.dataset.theme = "light"; } catch (e) { /* rien */ }
+
+  /* ===== Icône de chaque titre de section, choisie d'après son texte ===== */
+  var ICONES_SECTION = [
+    [/limite|ne prouve|ne dit|ne disent|reserve|avertissement/, "M12 4 21 20H3zM12 10v4M12 17h.01"],
+    [/salaire/, "M17 6.5a6 6 0 1 0 0 11M5 10h8M5 14h8"],
+    [/carte|geograph|departement|zone|perimetre|region/, "M12 21s-6-5.3-6-11a6 6 0 0 1 12 0c0 5.7-6 11-6 11zM12 12.5a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5z"],
+    [/bouge|evolution|courbe|monte|releve|veille|tendance/, "M4 17l6-6 4 4 6-7M14 8h6v6"],
+    [/mot|ats|outil|competence|ecart|manque|acquis/, "M4 4h7l9 9-7 7-9-9zM8 8h.01"],
+    [/offre|cdi|contrat/, "M4 8h16v11H4zM9 8V5h6v3M4 13h16"],
+    [/acteur|entreprise|employeur|recrut|secteur|cache/, "M4 21V5l8-2v18M12 9h8v12M8 8h.01M8 12h.01M8 16h.01M16 13h.01M16 17h.01"],
+    [/professionnel|demander|personnel|rgpd/, "M9 11a3 3 0 1 0 0-6 3 3 0 0 0 0 6zM3 20c0-3 3-5 6-5s6 2 6 5M16 5a3 3 0 0 1 0 6M18 15c2 .5 3 2.5 3 5"],
+    [/source|canal|methode|chaine|fonctionnement|script|reproduire|extraction|audit|entretien/, "M5 6c0-1.7 3.1-3 7-3s7 1.3 7 3-3.1 3-7 3-7-1.3-7-3zM5 6v12c0 1.7 3.1 3 7 3s7-1.3 7-3V6M5 12c0 1.7 3.1 3 7 3s7-1.3 7-3"],
+    [/metier|intitule|code|variante|parcours|cv|profil|formation|action/, "M8 7a4 4 0 1 0 8 0 4 4 0 0 0-8 0zM4 21c0-4 4-6 8-6s8 2 8 6"]
+  ];
+
+  function poserIconesSections() {
+    Array.prototype.forEach.call(document.querySelectorAll(".principal h2"), function (h) {
+      if (h.querySelector(".icone-section")) return;
+      var texte = sansAccent(h.textContent);
+      var trouve = ICONES_SECTION.filter(function (r) { return r[0].test(texte); })[0];
+      var chemin = trouve ? trouve[1] : "M12 12h.01M12 7v.01M12 17v.01";
+      h.insertAdjacentHTML("afterbegin", "<span class='icone-section' aria-hidden='true'>" +
+        "<svg viewBox='0 0 24 24'><path d='" + chemin + "'/></svg></span>");
+    });
+  }
+
+  /* ===== Encadrés « limites » repliables ===== */
+  // Le texte reste entier, pour le jury ; il s'ouvre d'un clic. Un lien du
+  // sommaire vers un encadré replié l'ouvre aussi.
+  function rendreRepliables() {
+    Array.prototype.forEach.call(document.querySelectorAll(".panneau.avertissement"), function (p) {
+      var h = p.querySelector(":scope > h2");
+      if (!h || p.querySelector(".bouton-repli")) return;
+      var corps = document.createElement("div");
+      corps.className = "corps-repli"; corps.hidden = true;
+      corps.id = (h.id || "limites") + "-corps";
+      while (h.nextSibling) corps.appendChild(h.nextSibling);
+      p.appendChild(corps);
+      var b = document.createElement("button");
+      b.type = "button"; b.className = "bouton-repli";
+      b.setAttribute("aria-expanded", "false"); b.setAttribute("aria-controls", corps.id);
+      while (h.firstChild) b.appendChild(h.firstChild);
+      h.appendChild(b);
+      b.addEventListener("click", function () {
+        var ouvert = b.getAttribute("aria-expanded") === "true";
+        b.setAttribute("aria-expanded", String(!ouvert)); corps.hidden = ouvert;
+      });
+    });
+    document.addEventListener("click", function (e) {
+      var a = e.target.closest("a[href^='#']");
+      var cible = a && document.getElementById(a.hash.slice(1));
+      var b = cible && cible.querySelector(".bouton-repli");
+      if (b && b.getAttribute("aria-expanded") === "false") b.click();
+    });
+  }
+
   function poserOssature() {
     var courante = pageCourante();
     var chiffres = chiffresDuMenu();
@@ -132,6 +219,7 @@
       "</div>" +
       "<nav class='navigation' aria-label='Navigation principale'>" + liens + "</nav>" +
       "<div class='pied-barre'>" + maj + "</div>";
+    aside.querySelector(".pied-barre").appendChild(boutonTheme());
 
     var voile = document.createElement("div");
     voile.className = "voile";
@@ -143,6 +231,7 @@
       "aria-controls='barre-laterale' aria-label='Ouvrir le menu'>" +
       "<svg viewBox='0 0 24 24'><path d='M4 7h16M4 12h16M4 17h16'/></svg></button>" +
       "<span class='titre'>" + echapper(titreCourant) + "</span>";
+    haut.appendChild(boutonTheme());
 
     var barreOnglets = document.createElement("nav");
     barreOnglets.className = "onglets-bas";
@@ -284,17 +373,26 @@
     el.innerHTML = "<div class='sommaire-defile'>" + liens.join("") + "</div>";
     var parId = {};
     Array.prototype.forEach.call(el.querySelectorAll("a"), function (a) { parId[a.hash.slice(1)] = a; });
-    if (!("IntersectionObserver" in window)) return;
-    var observateur = new IntersectionObserver(function (entrees) {
-      entrees.forEach(function (e) {
-        if (!e.isIntersecting) return;
-        Array.prototype.forEach.call(el.querySelectorAll("a"), function (a) { a.removeAttribute("aria-current"); });
-        var a = parId[e.target.id];
-        a.setAttribute("aria-current", "true");
-        a.scrollIntoView({ block: "nearest", inline: "nearest" });
-      });
-    }, { rootMargin: "-20% 0px -70% 0px" });
-    titres.forEach(function (h) { observateur.observe(h); });
+    // La section en cours : la dernière dont le titre a passé le tiers
+    // supérieur de l'écran. Recalculée au défilement, une fois par image.
+    var bandeau = el.querySelector(".sommaire-defile"), active = null, prevu = false;
+    function marquer() {
+      prevu = false;
+      var seuil = window.innerHeight / 3, courant = null;
+      titres.forEach(function (h) { if (h.getBoundingClientRect().top <= seuil) courant = h; });
+      var a = courant ? parId[courant.id] : null;
+      if (a === active) return;
+      if (active) active.removeAttribute("aria-current");
+      active = a;
+      if (!a) return;
+      a.setAttribute("aria-current", "true");
+      // Seul le bandeau des pastilles défile, jamais la page entière.
+      bandeau.scrollLeft = Math.max(0, a.offsetLeft - bandeau.offsetLeft - 16);
+    }
+    window.addEventListener("scroll", function () {
+      if (!prevu) { prevu = true; requestAnimationFrame(marquer); }
+    }, { passive: true });
+    marquer();
   }
 
   function poserKpis(el) {
@@ -1256,4 +1354,6 @@
   });
 
   poserValeurs();
+  poserIconesSections();
+  rendreRepliables();
 })();

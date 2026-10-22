@@ -29,18 +29,20 @@
   --ombre: none;
 }
 
-/* L'ancienne version claire, gardee en reserve : il suffirait d'ajouter
-   data-theme="light" sur la balise <html>. */
+/* Version claire « Jour », choisie par le bouton soleil / lune et retenue
+   par le navigateur. Validee par le calcul comme la version sombre :
+   turquoise / ambre a 23,3 au pire sous daltonisme, carte a 9,8 au pire
+   entre teintes voisines, textes de 5,0:1 a 17,9:1. */
 :root[data-theme="light"] {
   color-scheme: light;
-  --fond: #f4f2ee; --surface: #ffffff; --barre-fond: #ffffff; --bord: #e2ded6;
-  --texte: #1c1a17; --texte-doux: #6b655c;
-  --accent: #1b5e5a; --accent-doux: #e6efee;
-  --alerte: #8a3d2c; --alerte-doux: #f7ece8;
-  --barre: #2b7a75;
-  --carte-vide: #e8e5de; --carte-trait: #ffffff;
-  --c1: #cfe3e0; --c2: #9ccbc6; --c3: #5fada7; --c4: #2b7a75; --c5: #14514e;
-  --ombre: 0 1px 2px rgba(28, 26, 23, .05);
+  --fond: #f8fafc; --surface: #ffffff; --barre-fond: #ffffff; --bord: #e2e8f0;
+  --texte: #0f172a; --texte-doux: #475569;
+  --accent: #0f766e; --accent-doux: #e6f6f4;
+  --alerte: #b45309; --alerte-doux: #fef3c7;
+  --barre: #0d9488;
+  --carte-vide: #edf2f7; --carte-trait: #ffffff;
+  --c1: #7fd8c9; --c2: #36ae9f; --c3: #0f8174; --c4: #0a5650; --c5: #052b28;
+  --ombre: 0 1px 2px rgba(15, 23, 42, .06);
 }
 
 * { box-sizing: border-box; }
@@ -571,6 +573,36 @@ td code, .contenu code { font-size: .85em; background: var(--accent-doux); color
   .barre-laterale, .voile { transition: none; }
 }
 
+
+/* ================= lisibilité : thème, encadrés repliables, icônes ================= */
+
+.bouton-theme {
+  font: inherit; font-size: .78rem; cursor: pointer; color: var(--texte-doux);
+  background: transparent; border: 1px solid var(--bord); border-radius: 999px;
+  padding: 4px 11px; display: inline-flex; align-items: center; gap: 6px; margin-top: 10px;
+}
+.bouton-theme:hover { color: var(--texte); border-color: var(--texte-doux); }
+.bouton-theme svg, .icone-section svg { width: 15px; height: 15px; stroke: currentColor; fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.barre-mobile .bouton-theme { margin: 0 0 0 auto; }
+
+.icone-section {
+  display: inline-flex; align-items: center; justify-content: center; vertical-align: -3px;
+  width: 26px; height: 26px; margin-right: 9px; border-radius: 8px;
+  background: var(--accent-doux); color: var(--accent);
+}
+.panneau.avertissement .icone-section { background: var(--alerte-doux); color: var(--alerte); }
+
+.bouton-repli {
+  font: inherit; font-weight: inherit; color: inherit; background: none; border: 0; padding: 0;
+  cursor: pointer; display: flex; align-items: center; width: 100%; text-align: left;
+}
+.bouton-repli::after {
+  content: "Lire ▸"; margin-left: auto; font-size: .76rem; font-weight: 600; color: var(--alerte);
+  border: 1px solid var(--alerte); border-radius: 999px; padding: 1px 10px;
+}
+.bouton-repli[aria-expanded="true"]::after { content: "Replier ▾"; }
+.corps-repli { margin-top: 12px; }
+.corps-repli[hidden] { display: none; }
 
 /* ================= navigation : chiffres du menu, sommaire, onglets ================= */
 
