@@ -18,7 +18,8 @@
     marche: "M4 20V11M9.3 20V4M14.7 20v-6M20 20v-9M3 20h18",
     acteurs: "M3 20V6l6-2.5V20M9 20V9l6 2v9M15 20v-6l5.5 1.8V20M2 20h20M5.6 9h.8M5.6 12.5h.8M11.6 13h.8",
     methode: "M12 15.2a3.2 3.2 0 100-6.4 3.2 3.2 0 000 6.4zM19.3 14.6l1.5 1.1-1.7 3-1.8-.7a6 6 0 01-1.7 1l-.3 1.9h-3.4l-.3-1.9a6 6 0 01-1.7-1l-1.8.7-1.7-3 1.5-1.1a6 6 0 010-2l-1.5-1.1 1.7-3 1.8.7a6 6 0 011.7-1L11.9 3h3.4",
-    profil: "M12 12a4 4 0 100-8 4 4 0 000 8zM4.5 20.5a7.5 7.5 0 0115 0"
+    profil: "M12 12a4 4 0 100-8 4 4 0 000 8zM4.5 20.5a7.5 7.5 0 0115 0",
+    signet: "M6 3h12v18l-6-4.5L6 21z"
   };
 
   var PAGES = [
@@ -29,6 +30,7 @@
     { fichier: "acteurs.html",     titre: "Acteurs",     icone: "acteurs" },
     { groupe: "Moi" },
     { fichier: "profil.html",      titre: "Mon profil",  icone: "profil",  court: "Profil" },
+    { fichier: "mes-offres.html",  titre: "Mes offres",  icone: "signet",  court: "Suivi" },
     { groupe: "Le site" },
     { fichier: "methode.html",     titre: "Méthode",     icone: "methode" }
   ];
@@ -87,6 +89,8 @@
       "methode.html": [(D.serie || []).length, (D.serie || []).length + " relevés depuis le début"]
     };
     if (couverture != null) c["profil.html"] = [couverture + " %", "Mon CV couvre en moyenne " + couverture + " % des mots-clés des offres"];
+    var n = Object.keys(lireMesOffres()).length;
+    if (n) c["mes-offres.html"] = [n, n + " offre" + (n > 1 ? "s" : "") + " enregistrée" + (n > 1 ? "s" : "") + " dans ce navigateur"];
     return c;
   }
 
@@ -124,6 +128,8 @@
 
   /* ===== Icône de chaque titre de section, choisie d'après son texte ===== */
   var ICONES_SECTION = [
+    [/suivi|candidature|enregistr/, "M6 3h12v18l-6-4.5L6 21z"],
+    [/gardee|navigateur|sauvegarde/, "M6 11h12v10H6zM8 11V7a4 4 0 0 1 8 0v4"],
     [/limite|ne prouve|ne dit|ne disent|reserve|avertissement/, "M12 4 21 20H3zM12 10v4M12 17h.01"],
     [/salaire/, "M17 6.5a6 6 0 1 0 0 11M5 10h8M5 14h8"],
     [/carte|geograph|departement|zone|perimetre|region/, "M12 21s-6-5.3-6-11a6 6 0 0 1 12 0c0 5.7-6 11-6 11zM12 12.5a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5z"],
@@ -393,6 +399,166 @@
       if (!prevu) { prevu = true; requestAnimationFrame(marquer); }
     }, { passive: true });
     marquer();
+  }
+
+  /* ===== Mes offres : enregistrer, suivre, exporter =====
+   * Les offres enregistrées vivent dans ce navigateur (localStorage), avec
+   * une copie de leurs informations : une offre retirée des relevés reste
+   * lisible. Rien ne part sur un serveur ; « Exporter » en fait un fichier
+   * de sauvegarde, « Importer » le recharge ailleurs. */
+  var CLE_MES_OFFRES = "mesOffres";
+  var STATUTS = ["à postuler", "candidature envoyée", "relance", "entretien", "refusée"];
+
+  function lireMesOffres() {
+    try { return JSON.parse(localStorage.getItem(CLE_MES_OFFRES) || "{}") || {}; } catch (e) { return {}; }
+  }
+  function ecrireMesOffres(liste) {
+    try { localStorage.setItem(CLE_MES_OFFRES, JSON.stringify(liste)); return true; } catch (e) { return false; }
+  }
+
+  // Toutes les offres du relevé en cours, par identifiant.
+  function offresDuReleve() {
+    var parId = {};
+    (D.offres || []).forEach(function (o) { if (o.id) parId[o.id] = o; });
+    ((D.metiers_voisins || {}).offres_zones || []).forEach(function (o) { if (o.id && !parId[o.id]) parId[o.id] = o; });
+    return parId;
+  }
+
+  function boutonEnregistrer(o) {
+    if (!o.id) return "";
+    var pris = Object.prototype.hasOwnProperty.call(lireMesOffres(), o.id);
+    return "<button type='button' class='bouton-enregistrer' data-id='" + echapper(o.id) + "' aria-pressed='" + pris + "' " +
+      "aria-label='" + (pris ? "Retirer de mes offres" : "Enregistrer dans mes offres") + "'>" +
+      "<svg viewBox='0 0 24 24' aria-hidden='true'><path d='" + ICONES.signet + "'/></svg>" +
+      "<span>" + (pris ? "Enregistrée" : "Enregistrer") + "</span></button>";
+  }
+
+  function basculerEnregistrement(id) {
+    var liste = lireMesOffres(), o = offresDuReleve()[id];
+    if (liste[id]) {
+      delete liste[id];
+    } else if (o) {
+      liste[id] = {
+        offre: { id: o.id, intitule: o.intitule, entreprise: o.entreprise, lieu: o.lieu, contrat: o.contrat,
+                 salaire: o.salaire, date: o.date, url: o.url, metier: o.metier || "" },
+        statut: STATUTS[0], note: "", enregistree_le: D.meta.date
+      };
+    }
+    ecrireMesOffres(liste);
+    // Met à jour tous les boutons de cette offre, et le chiffre du menu.
+    var pris = Object.prototype.hasOwnProperty.call(liste, id);
+    Array.prototype.forEach.call(document.querySelectorAll(".bouton-enregistrer[data-id='" + id + "']"), function (b) {
+      b.setAttribute("aria-pressed", String(pris));
+      b.setAttribute("aria-label", pris ? "Retirer de mes offres" : "Enregistrer dans mes offres");
+      b.querySelector("span").textContent = pris ? "Enregistrée" : "Enregistrer";
+    });
+    var lien = document.querySelector(".navigation a[href='mes-offres.html']");
+    if (lien) {
+      var badge = lien.querySelector(".badge-nav"), n = Object.keys(liste).length;
+      if (!badge && n) { lien.insertAdjacentHTML("beforeend", "<span class='badge-nav'></span>"); badge = lien.querySelector(".badge-nav"); }
+      if (badge) { if (n) badge.textContent = n; else badge.remove(); }
+    }
+  }
+
+  // Un seul écouteur pour tous les boutons du site. Dans une carte
+  // compacte, le clic ne doit pas ouvrir ni fermer la carte.
+  document.addEventListener("click", function (e) {
+    var b = e.target.closest(".bouton-enregistrer");
+    if (!b) return;
+    e.preventDefault(); e.stopPropagation();
+    basculerEnregistrement(b.dataset.id);
+  });
+
+  function telecharger(nom, contenu) {
+    var lien = document.createElement("a");
+    lien.href = URL.createObjectURL(new Blob([contenu], { type: "application/json" }));
+    lien.download = nom;
+    document.body.appendChild(lien); lien.click(); lien.remove();
+    setTimeout(function () { URL.revokeObjectURL(lien.href); }, 1000);
+  }
+
+  function poserMesOffres(el) {
+    function dessiner() {
+      var liste = lireMesOffres(), duReleve = offresDuReleve();
+      var ids = Object.keys(liste).sort(function (a, b) {
+        return STATUTS.indexOf(liste[a].statut) - STATUTS.indexOf(liste[b].statut) ||
+          (liste[a].offre.date < liste[b].offre.date ? 1 : -1);
+      });
+      var parStatut = STATUTS.map(function (s) {
+        var n = ids.filter(function (id) { return liste[id].statut === s; }).length;
+        return "<span class='etiq" + (n ? "" : " gris") + "'>" + s + " · " + n + "</span>";
+      }).join("");
+      var outils = "<div class='barre-outils mes-offres-outils'>" +
+        "<p class='compte'>" + ids.length + " offre" + (ids.length > 1 ? "s" : "") + " enregistrée" + (ids.length > 1 ? "s" : "") + "</p>" +
+        "<button type='button' class='bouton-cv secondaire' data-action='exporter'" + (ids.length ? "" : " disabled") + ">Exporter</button>" +
+        "<label class='bouton-cv secondaire importer'>Importer<input type='file' accept='application/json,.json' hidden></label>" +
+        "</div><div class='etiquettes statuts-resume'>" + parStatut + "</div>";
+      if (!ids.length) {
+        el.innerHTML = outils + "<p class='vide-message'>Aucune offre enregistrée pour l'instant. " +
+          "Sur la page <a href='marche.html'>Le marché</a>, le bouton « Enregistrer » d'une offre la range ici.</p>";
+        return;
+      }
+      el.innerHTML = outils + ids.map(function (id) {
+        var e = liste[id], o = e.offre, retiree = !duReleve[id];
+        return "<article class='offre mon-offre" + (retiree ? " retiree" : "") + "' data-id='" + echapper(id) + "'>" +
+          "<div class='mon-offre-tete'><h3><a href='" + echapper(o.url) + "' target='_blank' rel='noopener'>" + echapper(o.intitule) + "</a></h3>" +
+            "<button type='button' class='lien-retirer' data-action='retirer'>Retirer</button></div>" +
+          "<p class='infos'>" + echapper(o.entreprise || "entreprise non précisée") + " · " + echapper(o.lieu) +
+            " · " + echapper(o.contrat) + (o.metier ? " · " + echapper(o.metier) : "") + "</p>" +
+          (retiree ? "<p class='alerte-retiree'>Absente du relevé du " + formaterDate(D.meta.date) +
+            " : l'offre a peut-être été pourvue ou retirée. Le lien peut ne plus fonctionner.</p>" : "") +
+          "<div class='mon-offre-suivi'>" +
+            "<label>Statut <select data-action='statut'>" + STATUTS.map(function (s) {
+              return "<option" + (s === e.statut ? " selected" : "") + ">" + s + "</option>";
+            }).join("") + "</select></label>" +
+            "<label class='note'>Note <textarea data-action='note' rows='2' placeholder='Contact, impression, date de relance…'>" +
+              echapper(e.note) + "</textarea></label>" +
+          "</div>" +
+          "<p class='note-graphe'>Enregistrée le " + formaterDate(e.enregistree_le) + " · publiée le " + formaterDate(o.date) + "</p>" +
+        "</article>";
+      }).join("");
+    }
+
+    el.addEventListener("change", function (e) {
+      var carte = e.target.closest(".mon-offre"), liste = lireMesOffres();
+      if (e.target.dataset.action === "statut" && carte) {
+        liste[carte.dataset.id].statut = e.target.value; ecrireMesOffres(liste); dessiner();
+      }
+      if (e.target.type === "file" && e.target.files[0]) {
+        var lecteur = new FileReader();
+        lecteur.onload = function () {
+          try {
+            var importees = JSON.parse(lecteur.result), courantes = lireMesOffres(), n = 0;
+            Object.keys(importees).forEach(function (id) {
+              if (importees[id] && importees[id].offre && !courantes[id]) { courantes[id] = importees[id]; n++; }
+            });
+            ecrireMesOffres(courantes); dessiner();
+            alert(n + " offre" + (n > 1 ? "s" : "") + " importée" + (n > 1 ? "s" : "") + ".");
+          } catch (err) { alert("Ce fichier n'est pas une sauvegarde de « Mes offres »."); }
+        };
+        lecteur.readAsText(e.target.files[0]);
+      }
+    });
+    el.addEventListener("input", function (e) {
+      var carte = e.target.closest(".mon-offre");
+      if (e.target.dataset.action !== "note" || !carte) return;
+      var liste = lireMesOffres();
+      liste[carte.dataset.id].note = e.target.value;
+      ecrireMesOffres(liste);
+    });
+    el.addEventListener("click", function (e) {
+      var action = e.target.dataset && e.target.dataset.action;
+      if (action === "exporter") {
+        telecharger("mes-offres-" + D.meta.date + ".json", JSON.stringify(lireMesOffres(), null, 2));
+      }
+      if (action === "retirer") {
+        var carte = e.target.closest(".mon-offre"), liste = lireMesOffres();
+        if (confirm("Retirer cette offre de vos offres enregistrées ?")) {
+          delete liste[carte.dataset.id]; ecrireMesOffres(liste); dessiner();
+        }
+      }
+    });
+    dessiner();
   }
 
   function poserKpis(el) {
@@ -683,7 +849,7 @@
         echapper(o.intitule) + "</a></h3>" +
       "<p class='infos'>" + echapper(o.entreprise || "entreprise non précisée") +
         " · " + echapper(o.lieu) + " · publiée le " + formaterDate(o.date) + "</p>" +
-      "<div class='etiquettes'>" + etiquettes + "</div>" + blocAts(o.ats) + "</article>";
+      "<div class='etiquettes'>" + etiquettes + boutonEnregistrer(o) + "</div>" + blocAts(o.ats) + "</article>";
   }
 
   function poserDernieresOffres(el) {
@@ -727,7 +893,7 @@
         "<h3>" + echapper(o.intitule) + "</h3>" +
         "<p class='infos'>" + echapper(o.lieu) + "</p>" +
         "<div class='etiquettes'>" + badges + "</div>" +
-      "</div>" + jaugeAts(o.ats) + "</summary>" +
+      "</div>" + jaugeAts(o.ats) + boutonEnregistrer(o) + "</summary>" +
       "<div class='compacte-detail'>" +
         "<p class='infos'>" + echapper(o.entreprise || "entreprise non précisée") +
           " · publiée le " + formaterDate(o.date) + " · " +
@@ -1397,6 +1563,7 @@
     "evolution": poserEvolution,
     "vedette": poserVedette,
     "sommaire-page": poserSommairePage,
+    "mes-offres": poserMesOffres,
     "a-retenir": poserARetenir,
     "mots-metier": poserMotsMetier,
     "salaires": poserSalaires,
