@@ -971,7 +971,7 @@
   if (!D) {
     var principal = document.querySelector(".principal") || document.body;
     var avertissement = document.createElement("p");
-    avertissement.style.color = "#8a3d2c";
+    avertissement.style.color = "var(--alerte)";
     avertissement.textContent = "Données absentes. Lancez : python scripts/traitement/generer_site.py";
     principal.insertBefore(avertissement, principal.firstChild);
     return;

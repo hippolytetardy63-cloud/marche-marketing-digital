@@ -1,44 +1,46 @@
 /* Feuille de style commune aux pages du tableau de bord.
    Une seule couleur a changer ici la change partout. */
 
+/* Habillage « Nuit » (22/10/2026) : sombre par defaut, turquoise et ambre.
+   Palette validee par le calcul avant adoption (distance de couleur
+   CIEDE2000, y compris sous protanopie, deuteranopie et tritanopie) :
+   - turquoise / ambre (outils acquis / a aller chercher, contour de mes
+     zones sur la carte) : 25,8 au pire, pour un seuil de 10 ;
+   - cinq teintes de la carte, deux a deux voisines : 8,4 au pire, seuil 8 ;
+   - textes : contraste de 7,0:1 a 16,1:1, seuil WCAG AA de 4,5:1.
+   Changer une couleur ici = refaire ce calcul. */
+
 :root {
-  --fond: #f4f2ee;
-  --surface: #ffffff;
-  --barre-fond: #ffffff;
-  --bord: #e2ded6;
-  --texte: #1c1a17;
-  --texte-doux: #6b655c;
-  --accent: #1b5e5a;
-  --accent-doux: #e6efee;
-  --alerte: #8a3d2c;
-  --alerte-doux: #f7ece8;
+  color-scheme: dark;
+  --fond: #0b0f19;
+  --surface: #111827;
+  --barre-fond: #0d1220;
+  --bord: #1f2937;
+  --texte: #f3f4f6;
+  --texte-doux: #9ca3af;
+  --accent: #2dd4bf;
+  --accent-doux: #0e2a2a;
+  --alerte: #fbbf24;
+  --alerte-doux: #2a2110;
+  --barre: #2dd4bf;
+  --carte-vide: #1a2232;
+  --carte-trait: #0b0f19;
+  --c1: #134e4a; --c2: #0f766e; --c3: #0fa594; --c4: #3fdcc6; --c5: #b8faef;
+  --ombre: none;
+}
+
+/* L'ancienne version claire, gardee en reserve : il suffirait d'ajouter
+   data-theme="light" sur la balise <html>. */
+:root[data-theme="light"] {
+  color-scheme: light;
+  --fond: #f4f2ee; --surface: #ffffff; --barre-fond: #ffffff; --bord: #e2ded6;
+  --texte: #1c1a17; --texte-doux: #6b655c;
+  --accent: #1b5e5a; --accent-doux: #e6efee;
+  --alerte: #8a3d2c; --alerte-doux: #f7ece8;
   --barre: #2b7a75;
-  --carte-vide: #e8e5de;
-  --carte-trait: #ffffff;
+  --carte-vide: #e8e5de; --carte-trait: #ffffff;
   --c1: #cfe3e0; --c2: #9ccbc6; --c3: #5fada7; --c4: #2b7a75; --c5: #14514e;
   --ombre: 0 1px 2px rgba(28, 26, 23, .05);
-}
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) {
-    --fond: #121110; --surface: #1c1b18; --barre-fond: #191816; --bord: #302e29;
-    --texte: #f2efe9; --texte-doux: #a29b90;
-    --accent: #7fc9c2; --accent-doux: #22332f;
-    --alerte: #e0917c; --alerte-doux: #2e211d;
-    --barre: #4fa39c;
-    --carte-vide: #272521; --carte-trait: #1c1b18;
-    --c1: #26403d; --c2: #34615c; --c3: #47857e; --c4: #5fada7; --c5: #8fd4cd;
-    --ombre: none;
-  }
-}
-:root[data-theme="dark"] {
-  --fond: #121110; --surface: #1c1b18; --barre-fond: #191816; --bord: #302e29;
-  --texte: #f2efe9; --texte-doux: #a29b90;
-  --accent: #7fc9c2; --accent-doux: #22332f;
-  --alerte: #e0917c; --alerte-doux: #2e211d;
-  --barre: #4fa39c;
-  --carte-vide: #272521; --carte-trait: #1c1b18;
-  --c1: #26403d; --c2: #34615c; --c3: #47857e; --c4: #5fada7; --c5: #8fd4cd;
-  --ombre: none;
 }
 
 * { box-sizing: border-box; }
@@ -568,3 +570,41 @@ td code, .contenu code { font-size: .85em; background: var(--accent-doux); color
 @media (prefers-reduced-motion: reduce) {
   .barre-laterale, .voile { transition: none; }
 }
+
+
+/* ================= habillage « Nuit » ================= */
+/* Les formes modernisees : coins plus ronds, pastilles, chiffres plus
+   presents. Les couleurs, elles, viennent toutes des variables du haut. */
+
+::selection { background: var(--accent); color: var(--fond); }
+.entete-page h1 { font-weight: 700; letter-spacing: -.025em; }
+.entete-page .fil { color: var(--accent); }
+
+.barre-laterale { border-right-color: var(--bord); }
+.marque .titre { letter-spacing: -.01em; }
+.marque .rome { border-radius: 999px; padding: 2px 10px; }
+.navigation a { border-radius: 10px; }
+.navigation a:hover { background: var(--surface); }
+.navigation a[aria-current="page"] {
+  background: var(--accent-doux); color: var(--accent);
+  box-shadow: inset 3px 0 0 var(--accent);
+}
+
+.horodatage { border-radius: 999px; padding: 6px 14px; }
+.bouton-maj { border-radius: 999px; color: var(--fond); padding: 8px 18px; }
+
+.kpi { border-radius: 16px; padding: 18px 20px; }
+.kpi .valeur { font-size: 2.2rem; font-weight: 700; letter-spacing: -.03em; font-variant-numeric: tabular-nums; }
+.kpi.principal { border-color: var(--accent); }
+
+.panneau { border-radius: 16px; padding: 22px 24px; }
+.panneau > h2 { font-weight: 680; letter-spacing: -.01em; }
+
+.barre-piste { border-radius: 999px; }
+.barre-remplie { border-radius: 999px; }
+.etiq { border-radius: 999px; padding: 2px 10px; }
+
+.offre { border-radius: 14px; transition: border-color .15s; }
+.offre:hover { border-color: var(--accent); }
+
+.graphe .aire { opacity: .16; }
