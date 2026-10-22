@@ -601,7 +601,16 @@
         "<span class='lieu'>" + l[0] + "</span>" +
         "<span class='barre-piste'><span class='barre-remplie' style='width:" + largeur + "%'></span></span>" +
         "<span class='n'>" + l[1] + "</span></div>";
-    }).join("");
+    }).join("") +
+      "<p class='note-graphe zones-part'>Mes zones : " + Object.keys(miens).map(function (code) {
+        var n = parDep[code] || 0;
+        return "<strong>" + echapper(miens[code]) + "</strong> " + n + " offre" + (n > 1 ? "s" : "") +
+          " (" + pourcentageMarche(n) + " % du marché)";
+      }).join(" · ") + ".</p>";
+  }
+
+  function pourcentageMarche(n) {
+    return D.stats.total ? Math.round(n * 100 / D.stats.total) : 0;
   }
 
   function poserBarresContrats(el) {
@@ -982,10 +991,16 @@
     var bas = Math.max(0, mini - marche);
     var haut = maxi + marche;
 
+    // L'axe horizontal suit le calendrier : deux relevés espacés de treize
+    // jours sont treize fois plus loin que deux relevés consécutifs. Un
+    // espacement régulier cacherait les périodes sans relevé.
+    var temps = serie.map(function (p) { return Date.parse(p.date); });
+    var duree = temps[temps.length - 1] - temps[0];
     function px(i) {
-      return marge.gauche + (serie.length === 1 ? largeur / 2
-        : (i / (serie.length - 1)) * largeur);
+      return marge.gauche + (serie.length === 1 || !duree ? largeur / 2
+        : ((temps[i] - temps[0]) / duree) * largeur);
     }
+    var JOUR = 86400000, TROU = 5; // plus de 5 jours sans relevé : un trou
     function py(valeur) {
       return marge.haut + hauteur - ((valeur - bas) / (haut - bas)) * hauteur;
     }
@@ -1001,6 +1016,21 @@
     var trace = serie.map(function (p, i) {
       return (i ? "L" : "M") + px(i).toFixed(1) + " " + py(p.total).toFixed(1);
     }).join(" ");
+
+    // La ligne pleine s'interrompt dans les trous, tracés en pointillés et
+    // annotés : on voit qu'on ne sait rien de ce qui s'est passé entre-temps.
+    var lignePleine = "", trous = "";
+    serie.forEach(function (p, i) {
+      var xy = px(i).toFixed(1) + " " + py(p.total).toFixed(1);
+      var trou = i && (temps[i] - temps[i - 1]) / JOUR > TROU;
+      lignePleine += (i === 0 || trou ? " M" : " L") + xy;
+      if (trou) {
+        var x1 = px(i - 1), x2 = px(i), y1 = py(serie[i - 1].total), y2 = py(p.total);
+        trous += "<path class='trou' d='M" + x1.toFixed(1) + " " + y1.toFixed(1) + " L" + x2.toFixed(1) + " " + y2.toFixed(1) + "'/>" +
+          "<text class='note-trou' x='" + ((x1 + x2) / 2).toFixed(1) + "' y='" + (marge.haut + 12) +
+          "' text-anchor='middle'>pas de relevé (" + Math.round((temps[i] - temps[i - 1]) / JOUR) + " j)</text>";
+      }
+    });
 
     var aire = "M" + px(0).toFixed(1) + " " + (marge.haut + hauteur) +
       " " + trace.slice(1) +
@@ -1039,7 +1069,7 @@
         " à " + dernier.date + " : de " + premier.total + " à " + dernier.total + " offres.\">" +
           grille +
           "<path class='aire' d='" + aire + "'/>" +
-          "<path class='courbe' d='" + trace + "'/>" +
+          "<path class='courbe' d='" + lignePleine.trim() + "'/>" + trous +
           points + dates + etiquette +
         "</svg>" +
         "<div class='graphe-bulle' hidden></div>" +
@@ -1047,7 +1077,7 @@
       "<p class='note-graphe'>" + serie.length + " relevés, du " +
         formaterDate(premier.date) + " au " + formaterDate(dernier.date) + " · " +
         motEcart + " offre" + (Math.abs(ecart) > 1 ? "s" : "") +
-        ". L'axe vertical ne part pas de zéro.</p>" +
+        ". L'axe vertical ne part pas de zéro ; l'axe horizontal suit le calendrier, les périodes sans relevé sont en pointillés.</p>" +
       "<table class='tableau-serie'><caption>Le détail de chaque relevé</caption>" +
         "<thead><tr><th>Relevé</th><th>Offres</th><th>Dont CDI</th>" +
         "<th>Salaire affiché</th>" +
@@ -1192,6 +1222,32 @@
    * est calcule par generer_site.py, y compris les exclusions ; ici, trois
    * petits tableaux plutot qu'un histogramme, qui demanderait une palette
    * validee par le calcul. */
+  /* La jauge des salaires : la moitié centrale du marché (du quart bas au
+   * quart haut), sa médiane, et mes repères posés dessus. Une seule bande
+   * turquoise, des repères ambre étiquetés en toutes lettres : le tableau
+   * qui suit reprend les mêmes valeurs. */
+  function jaugeSalaires(S) {
+    var reperes = S.reperes.filter(function (r) { return r.nom !== "Médiane de ma promo IAE"; });
+    var valeurs = [S.quart_bas, S.quart_haut].concat(reperes.map(function (r) { return r.montant; }));
+    var bas = Math.floor((Math.min.apply(null, valeurs) - 400) / 100) * 100;
+    var haut = Math.ceil((Math.max.apply(null, valeurs) + 400) / 100) * 100;
+    function pos(v) { return ((v - bas) / (haut - bas) * 100).toFixed(1); }
+    var description = "Moitié centrale des salaires de " + euros(S.quart_bas) + " à " + euros(S.quart_haut) +
+      ", médiane " + euros(S.mediane) + " ; " + reperes.map(function (r) { return r.nom.toLowerCase() + " " + euros(r.montant); }).join(", ");
+    return "<div class='jauge-salaires' role='img' aria-label='" + echapper(description) + "'>" +
+      "<div class='js-piste'>" +
+        "<span class='js-bande' data-gauche='" + pos(S.quart_bas) + "' data-largeur='" + (pos(S.quart_haut) - pos(S.quart_bas)).toFixed(1) + "'></span>" +
+        "<span class='js-mediane' data-gauche='" + pos(S.mediane) + "'><span>médiane " + euros(S.mediane) + "</span></span>" +
+        reperes.map(function (r, i) {
+          return "<span class='js-repere " + (i % 2 ? "dessous" : "dessus") + "' data-gauche='" + pos(r.montant) + "'>" +
+            "<span>" + echapper(r.nom.replace(/^Mon |^Ma /, "")) + " " + euros(r.montant) + "</span></span>";
+        }).join("") +
+      "</div>" +
+      "<div class='js-bornes'><span>" + euros(bas) + "</span><span>la moitié des offres paie entre " +
+        euros(S.quart_bas) + " et " + euros(S.quart_haut) + "</span><span>" + euros(haut) + "</span></div>" +
+    "</div>";
+  }
+
   function poserSalaires(el) {
     var S = D.salaires;
     if (!S) {
@@ -1211,6 +1267,7 @@
       "<p class='chiffre-cle'><strong>" + euros(S.mediane) + "</strong> brut par mois : " +
         "le salaire médian des CDI. La moitié des offres se situe entre " +
         euros(S.quart_bas) + " et " + euros(S.quart_haut) + ".</p>" +
+      jaugeSalaires(S) +
       tableau("Où tombent mes repères", ["Repère", "Montant", "Paient au moins"],
         S.reperes.map(function (r) {
           return "<tr><td>" + echapper(r.nom) + "</td><td>" + euros(r.montant) + "</td><td>" +
@@ -1226,6 +1283,11 @@
         S.incoherentes + " saisie" + (S.incoherentes > 1 ? "s" : "") +
         " incohérente" + (S.incoherentes > 1 ? "s" : "") + " écartés. " +
         "Tout est ramené en brut mensuel sur douze mois.</p>";
+    // Positions posées par le script : aucun style écrit dans le HTML.
+    Array.prototype.forEach.call(el.querySelectorAll("[data-gauche]"), function (n) {
+      n.style.left = n.dataset.gauche + "%";
+      if (n.dataset.largeur) n.style.width = n.dataset.largeur + "%";
+    });
   }
 
   function poserEmployeurs(el) {

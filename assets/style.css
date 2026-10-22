@@ -712,6 +712,31 @@ td code, .contenu code { font-size: .85em; background: var(--accent-doux); color
 .jauge-remplie { display: block; height: 100%; width: 0; border-radius: 999px; background: var(--barre); }
 .jauge-legende { font-size: .68rem; color: var(--texte-doux); letter-spacing: .04em; }
 
+/* ================= visualisations : trous de la courbe, zones, salaires ================= */
+
+.graphe .trou { fill: none; stroke: var(--texte-doux); stroke-width: 1.6; stroke-dasharray: 4 5; }
+.graphe .note-trou { font-size: 11px; fill: var(--texte-doux); font-style: italic; }
+
+.barre-ligne:not(.mienne) .barre-remplie { opacity: .45; }
+.barre-ligne.mienne .barre-remplie { box-shadow: 0 0 0 1px var(--accent); }
+.zones-part strong { color: var(--texte); }
+
+.jauge-salaires { margin: 22px 0 6px; }
+.js-piste { position: relative; height: 12px; margin: 58px 0 34px; border-radius: 999px; background: var(--fond); border: 1px solid var(--bord); }
+.js-bande { position: absolute; top: -1px; bottom: -1px; border-radius: 999px; background: var(--accent-doux); border: 1px solid var(--accent); }
+.js-mediane { position: absolute; top: -6px; bottom: -6px; width: 3px; margin-left: -1.5px; border-radius: 2px; background: var(--accent); }
+.js-mediane > span, .js-repere > span {
+  position: absolute; left: 50%; transform: translateX(-50%); white-space: nowrap;
+  font-size: .72rem; font-weight: 650;
+}
+.js-mediane > span { bottom: calc(100% + 4px); color: var(--accent); }
+.js-repere { position: absolute; top: -8px; bottom: -8px; width: 2px; margin-left: -1px; background: var(--alerte); }
+.js-repere > span { color: var(--alerte); }
+.js-repere.dessus > span { bottom: calc(100% + 20px); }
+.js-repere.dessous > span { top: calc(100% + 4px); }
+.js-bornes { display: flex; justify-content: space-between; gap: 10px; font-size: .72rem; color: var(--texte-doux); }
+.js-bornes span:nth-child(2) { text-align: center; }
+
 /* ================= mots-cles ATS d'une offre ================= */
 
 .ats {
