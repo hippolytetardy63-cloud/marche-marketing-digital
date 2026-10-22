@@ -388,6 +388,25 @@
     el.innerHTML = "<ul>" + points.map(function (p) { return "<li>" + p + "</li>"; }).join("") + "</ul>";
   }
 
+  /* Les mots-cles de l'offre face a mon CV, comme les compare un logiciel
+   * de tri des candidatures (ATS). Calcule par generer_site.py. Le sens ne
+   * repose pas que sur la couleur : un ✓ pour ce que j'ai, « à ajouter »
+   * pour ce qui manque. */
+  function blocAts(ats) {
+    if (!ats) return "";
+    var n = ats.acquis.length + ats.manquants.length;
+    if (!n) {
+      return "<p class='ats'><span class='ats-titre'>Mots-clés ATS</span> " +
+        "aucun outil reconnu dans l'annonce : à lire en entier.</p>";
+    }
+    return "<p class='ats'><span class='ats-titre'>Mots-clés ATS · mon CV en couvre " +
+        ats.acquis.length + " sur " + n + "</span>" +
+      ats.acquis.map(function (m) { return "<span class='ats-ok'>✓ " + echapper(m) + "</span>"; }).join("") +
+      (ats.manquants.length ? "<span class='ats-sep'>à ajouter :</span>" +
+        ats.manquants.map(function (m) { return "<span class='ats-manque'>" + echapper(m) + "</span>"; }).join("") : "") +
+      "</p>";
+  }
+
   function carteOffre(o) {
     // Le metier et l'experience ne sont fournis que pour la liste des
     // metiers voisins ; ailleurs, la carte reste telle qu'avant.
@@ -401,7 +420,7 @@
         echapper(o.intitule) + "</a></h3>" +
       "<p class='infos'>" + echapper(o.entreprise || "entreprise non précisée") +
         " · " + echapper(o.lieu) + " · publiée le " + formaterDate(o.date) + "</p>" +
-      "<div class='etiquettes'>" + etiquettes + "</div></article>";
+      "<div class='etiquettes'>" + etiquettes + "</div>" + blocAts(o.ats) + "</article>";
   }
 
   function poserDernieresOffres(el) {

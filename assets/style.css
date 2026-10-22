@@ -572,6 +572,19 @@ td code, .contenu code { font-size: .85em; background: var(--accent-doux); color
 }
 
 
+/* ================= mots-cles ATS d'une offre ================= */
+
+.ats {
+  display: flex; flex-wrap: wrap; align-items: center; gap: 5px;
+  margin: 11px 0 0; padding-top: 10px; border-top: 1px dashed var(--bord);
+  font-size: .76rem; color: var(--texte-doux);
+}
+.ats-titre { width: 100%; font-weight: 600; letter-spacing: .01em; }
+.ats-ok, .ats-manque { border-radius: 999px; padding: 1px 9px; border: 1px solid; }
+.ats-ok { color: var(--accent); border-color: var(--accent); }
+.ats-manque { color: var(--alerte); border-color: var(--alerte); }
+.ats-sep { margin-left: 4px; }
+
 /* ================= habillage « Nuit » ================= */
 /* Les formes modernisees : coins plus ronds, pastilles, chiffres plus
    presents. Les couleurs, elles, viennent toutes des variables du haut. */
