@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Le marché — Marché du chargé de marketing digital</title>
+<link rel="stylesheet" href="assets/style.css?v=1313e41a">
+</head>
+<body>
+
+<main class="principal">
+
+  <div class="entete-page">
+    <div>
+      <p class="fil">Le marché</p>
+      <h1>Ce que disent les <span data-valeur="stats.total"></span> offres</h1>
+      <p class="sous-titre">Géographie, contrats, salaires — et chaque annonce, avec son lien.</p>
+    </div>
+    <div data-bloc="horodatage"></div>
+  </div>
+
+  <div data-bloc="kpis"></div>
+
+  <div class="rangee large-etroit">
+    <section class="panneau">
+      <h2>La carte</h2>
+      <p class="chapo">Survolez pour le compte, cliquez pour les offres. Mes deux zones sont cerclées de rouge.</p>
+      <div data-bloc="carte-france"></div>
+    </section>
+    <section class="panneau">
+      <h2>Les dix premiers départements</h2>
+      <p class="chapo">Plus mes zones si elles n'y figurent pas.</p>
+      <div data-bloc="barres-departements" data-combien="10"></div>
+      <div class="contenu">
+        <p>La concentration francilienne est le fait marquant : <span data-valeur="stats.idf_pct"></span> % des offres s'y trouvent. Le Rhône arrive en tête des départements de province, ce qui valide Lyon comme zone réaliste. Le Puy-de-Dôme, lui, n'apparaît pas.</p>
+      </div>
+    </section>
+  </div>
+
+  <div class="rangee large-etroit">
+    <section class="panneau">
+      <h2>Tous les types de contrat</h2>
+      <p class="chapo">Du plus fréquent au plus rare.</p>
+      <div data-bloc="barres-contrats"></div>
+    </section>
+    <section class="panneau">
+      <h2>Lecture</h2>
+      <div class="contenu">
+        <p>Mon critère « CDI exclusivement » me laisse <strong><span data-valeur="stats.cdi"></span> offres sur <span data-valeur="stats.total"></span></strong>, soit <span data-valeur="stats.cdi_pct"></span> % du marché. Une amputation sérieuse, mais pas rédhibitoire.</p>
+        <p>Les offres en « profession libérale » méritent un examen : dans ce secteur, ce sont souvent des propositions de franchise ou de statut indépendant présentées comme un emploi. Elles gonflent le volume apparent sans correspondre à un poste salarié.</p>
+      </div>
+    </section>
+  </div>
+
+  <section class="panneau">
+    <h2>Les salaires</h2>
+    <p class="chapo">Ce qu'on peut en dire aujourd'hui, et ce qu'on ne peut pas encore.</p>
+    <div class="contenu">
+      <p>Seules <strong><span data-valeur="stats.avec_salaire"></span> offres sur <span data-valeur="stats.total"></span></strong> affichent une rémunération, soit <span data-valeur="stats.avec_salaire_pct"></span> %. Les trois quarts du marché restent muets sur ce point.</p>
+      <p>Les formats sont hétérogènes — annuel, mensuel, horaire, fourchette ou valeur unique. Pour comparer, chaque salaire est ramené en <strong>brut mensuel sur douze mois</strong> : l'annuel divisé par douze, l'horaire multiplié par 151,67 heures, une fourchette prise en son milieu. Seuls les CDI à temps plein comptent, et chaque offre distincte une seule fois depuis le premier relevé.</p>
+      <p>Les saisies manifestement fausses — un salaire annuel de plusieurs millions, un annuel coché « mensuel » — sont écartées et comptées, jamais corrigées : deviner ce que le recruteur voulait écrire serait inventer un chiffre.</p>
+      <p><strong>Limite à garder en tête</strong> : les offres qui affichent un salaire ne ressemblent pas forcément à celles qui le taisent.</p>
+    </div>
+    <div data-bloc="salaires"></div>
+  </section>
+
+  <h2>Les offres, une par une</h2>
+  <p class="chapo">Chacune renvoie directement à l'annonce sur France Travail. Les liens s'ouvrent dans un nouvel onglet.</p>
+  <div data-bloc="offres"></div>
+
+  <h2>Et les métiers voisins ?</h2>
+  <p class="chapo">Chef de produit et chargé de communication, relevés à côté du métier principal. Ce sont les seuls à faire apparaître des offres autour de Clermont.</p>
+
+  <div class="rangee large-etroit">
+    <section class="panneau">
+      <h2>Trois métiers, côte à côte</h2>
+      <div data-bloc="comparaison-metiers"></div>
+      <h2 class="titre-suite">Les CDI dans mes zones, métiers voisins compris</h2>
+      <p class="chapo">Chaque annonce s'ouvre sur France Travail dans un nouvel onglet.</p>
+      <div data-bloc="offres-mes-zones"></div>
+    </section>
+    <section class="panneau avertissement">
+      <h2>Ce que ces chiffres ne disent pas</h2>
+      <div class="contenu">
+        <ul>
+          <li><strong>Le code M1703 mélange deux métiers</strong> : le chef de produit marketing, et le chef de produit industriel — bâtiment, étanchéité, chauffage. Il se lit intitulé par intitulé.</li>
+          <li><strong>Le code E1112 est dominé par l'alternance</strong>. C'est pourquoi la liste ne garde que les CDI, mon critère.</li>
+          <li><strong>Mes zones sont comptées par département</strong>, comme sur la carte. Ambert est dans le Puy-de-Dôme mais à une heure de Clermont, Tarare dans le Rhône mais hors de Lyon + 20 km : la commune est affichée pour juger.</li>
+          <li><strong>Les métiers voisins ne sont relevés que depuis le 21 octobre 2026.</strong> Pas encore de tendance : ils ne sont dans aucune courbe et dans aucun autre chiffre du site.</li>
+        </ul>
+      </div>
+    </section>
+  </div>
+
+  <h2>Comment le marché bouge</h2>
+  <p class="chapo">Chaque relevé s'ajoute au précédent. Voici ce que l'accumulation montre pour l'instant.</p>
+
+  <div class="rangee large-etroit">
+    <section class="panneau">
+      <h2>Le nombre d'offres, relevé après relevé</h2>
+      <p class="chapo">Survolez la courbe pour lire un relevé précis.</p>
+      <div data-bloc="evolution"></div>
+    </section>
+    <section class="panneau avertissement">
+      <h2>Ce que cette courbe ne prouve pas</h2>
+      <div class="contenu">
+        <p><strong>Quelques relevés sur quelques jours ne font pas une tendance.</strong> Ce qu'on voit ici, ce sont des variations quotidiennes ordinaires : des offres arrivent, d'autres expirent. Entre deux relevés du 22 septembre séparés de deux heures, une offre avait déjà disparu et une autre était apparue.</p>
+        <p>Il faudra plusieurs semaines pour distinguer un mouvement réel du bruit de fond. La courbe est là dès maintenant parce qu'elle se construit toute seule, et qu'attendre novembre pour la regarder n'aurait servi à rien.</p>
+        <p>Ce qu'elle apporte déjà : la preuve que la collecte tourne, et un point de comparaison daté pour chaque nouveau relevé.</p>
+      </div>
+    </section>
+  </div>
+
+  <div class="rangee large-etroit">
+    <section class="panneau">
+      <h2>Les mots qui montent</h2>
+      <p class="chapo">Part des offres qui citent chaque mot, au premier et au dernier relevé qui contiennent le texte des annonces.</p>
+      <div data-bloc="mots-metier"></div>
+    </section>
+    <section class="panneau avertissement">
+      <h2>Ce que ce tableau ne prouve pas</h2>
+      <div class="contenu">
+        <ul>
+          <li><strong>Une part peut monter sans que le nombre d'offres change.</strong> Quand le marché se contracte, les offres qui restent pèsent plus lourd. D'où les deux chiffres, le nombre et la part.</li>
+          <li><strong>Avec si peu d'offres par relevé, quelques points d'écart peuvent venir du hasard.</strong> C'est ce que signale « à confirmer ».</li>
+          <li><strong>On ne trouve que les mots qu'on cherche.</strong> La liste est fermée, et chaque motif a été vérifié sur les annonces : « automatisation » écarte par exemple « automaticien », un métier de l'industrie.</li>
+          <li><strong>Les plus anciens relevés ne comptent pas</strong> : ils n'ont pas le texte complet des annonces.</li>
+        </ul>
+      </div>
+    </section>
+  </div>
+
+  <p data-bloc="pied"></p>
+
+</main>
+
+<script src="assets/carte_france.js"></script>
+<script src="assets/donnees.js?v=8a4b89a2"></script>
+<script src="assets/site.js?v=43b064d8"></script>
+</body>
+</html>

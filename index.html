@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tableau de bord — Marché du chargé de marketing digital</title>
+<link rel="stylesheet" href="assets/style.css?v=1313e41a">
+</head>
+<body>
+
+<main class="principal">
+
+  <div class="entete-page">
+    <div>
+      <p class="fil">Tableau de bord</p>
+      <h1>Le marché du chargé de marketing digital</h1>
+      <p class="sous-titre">Ce que disent les offres d'emploi, comptées et non racontées.</p>
+    </div>
+    <div class="coin-actions">
+      <div data-bloc="horodatage"></div>
+      <div data-bloc="bouton-maj"></div>
+    </div>
+  </div>
+
+  <div data-bloc="kpis"></div>
+
+  <div class="rangee large-etroit">
+    <section class="panneau">
+      <h2>Répartition géographique</h2>
+      <p class="chapo">Survolez un département pour son compte, cliquez pour voir ses offres. Mes deux zones sont cerclées de rouge.</p>
+      <div data-bloc="carte-france"></div>
+    </section>
+    <section class="panneau">
+      <h2>Départements en tête</h2>
+      <p class="chapo">Les huit premiers, plus mes zones.</p>
+      <div data-bloc="barres-departements" data-combien="8"></div>
+    </section>
+  </div>
+
+  <div class="rangee moities">
+    <section class="panneau">
+      <h2>Types de contrat</h2>
+      <p class="chapo">Les cinq plus fréquents.</p>
+      <div data-bloc="barres-contrats" data-combien="5"></div>
+    </section>
+    <section class="panneau">
+      <h2>Dernières offres publiées</h2>
+      <p class="chapo">Cliquez pour ouvrir l'annonce sur France Travail.</p>
+      <div data-bloc="dernieres-offres" data-combien="3"></div>
+    </section>
+  </div>
+
+  <div class="rangee moities">
+    <section class="panneau avertissement">
+      <h2>Ce que ce fichier ne dit pas</h2>
+      <p class="chapo">Les limites comptent autant que les chiffres.</p>
+      <div data-bloc="reserves"></div>
+    </section>
+    <section class="panneau">
+      <h2>D'où vient ce chiffre</h2>
+      <p class="chapo">Un chiffre sans source ni date ne vaut rien.</p>
+      <div data-bloc="source"></div>
+    </section>
+  </div>
+
+  <h2>Continuer la lecture</h2>
+  <p class="chapo">Le détail est réparti en cinq pages.</p>
+  <div class="sommaire">
+    <a href="metier.html">
+      <div class="titre">Le métier</div>
+      <div class="desc">Comment le marché le nomme, et les codes ROME qu'il a fallu corriger.</div>
+    </a>
+    <a href="marche.html">
+      <div class="titre">Le marché</div>
+      <div class="desc">Départements, contrats, salaires, l'évolution, et les <span data-valeur="stats.total"></span> offres une par une.</div>
+    </a>
+    <a href="acteurs.html">
+      <div class="titre">Acteurs</div>
+      <div class="desc">Les <span data-valeur="acteurs.entreprises_distinctes"></span> entreprises qui recrutent, et le marché caché de celles qui ne publient pas.</div>
+    </a>
+    <a href="profil.html">
+      <div class="titre">Mon profil</div>
+      <div class="desc">Mon CV confronté aux outils que ce marché demande, et ce qui me manque.</div>
+    </a>
+    <a href="methode.html">
+      <div class="titre">Méthode</div>
+      <div class="desc">Les canaux, les limites de l'API, les scripts et la règle sur les données personnelles.</div>
+    </a>
+  </div>
+
+  <h2>La suite</h2>
+  <p class="chapo">Ce qui sera ajouté d'ici le 19 novembre.</p>
+  <div class="contenu">
+    <p>Plusieurs extractions datées, pour voir le marché bouger plutôt que de le photographier une fois. Les codes ROME voisins — M1703 chef de produit, E1112 chargé de communication — pour tester l'hypothèse de l'intitulé. Les compétences et outils réellement demandés, confrontés à ce que la formation donne. Les entreprises qui recrutent, et celles du marché caché qui ne publient pas d'annonce.</p>
+  </div>
+
+  <p data-bloc="pied"></p>
+
+</main>
+
+<script src="assets/carte_france.js"></script>
+<script src="assets/donnees.js?v=8a4b89a2"></script>
+<script src="assets/site.js?v=43b064d8"></script>
+</body>
+</html>

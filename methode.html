@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Méthode — Marché du chargé de marketing digital</title>
+<link rel="stylesheet" href="assets/style.css?v=1313e41a">
+</head>
+<body>
+
+<main class="principal">
+
+  <div class="entete-page">
+    <div>
+      <p class="fil">Méthode</p>
+      <h1>Comment ce tableau de bord est fabriqué</h1>
+      <p class="sous-titre">Une chaîne qu'on sait expliquer se défend. Une boîte noire, non.</p>
+    </div>
+    <div data-bloc="horodatage"></div>
+  </div>
+
+  <section class="panneau">
+    <h2>Le fonctionnement en un coup d'œil</h2>
+    <p class="chapo">Qui parle à qui, dans quel ordre, et à quelle heure.</p>
+
+    <div class="schema-cadre">
+    <svg class="schema" viewBox="0 0 580 740" role="img"
+         aria-label="Schéma du fonctionnement, en deux temps séparés. Collecte : l'API France Travail répond au script extraction_offres.py, qui garde sa réponse telle quelle dans data/brut. Traitement : mise_en_forme.py en tire un fichier CSV daté dans data/traite, puis generer_site.py en tire les données du site, affichées sur les cinq pages. Le tout est relancé automatiquement tous les deux jours à 8 h, et vérifié par un audit le lundi et le jeudi à 9 h.">
+
+      <!-- cadre de l'audit -->
+      <rect class="cadre" x="14" y="14" width="552" height="682" rx="14"/>
+
+      <!-- 1. API -->
+      <rect class="externe" x="76" y="32" width="340" height="52" rx="9"/>
+      <text class="t1" x="96" y="54">API France Travail</text>
+      <text class="t2" x="96" y="72">Offres d'emploi v2 · 150 offres par appel</text>
+
+      <path class="flux" d="M246 84 L246 120"/>
+      <path class="pointe" d="M246 128 l-5 -9 h10 z"/>
+
+      <!-- zone de collecte -->
+      <rect class="zone" x="62" y="100" width="368" height="164" rx="11"/>
+      <text class="zone-t" x="74" y="117">COLLECTE · scripts/collecte/</text>
+
+      <!-- 2. extraction -->
+      <rect class="script" x="76" y="128" width="340" height="52" rx="9"/>
+      <text class="t1" x="96" y="150">extraction_offres.py</text>
+      <text class="t2" x="96" y="168">interroge l'API, ne transforme rien</text>
+
+      <rect class="annexe" x="444" y="132" width="116" height="44" rx="8"/>
+      <text class="t1 petit" x="456" y="151">.env</text>
+      <text class="t2 petit" x="456" y="167">jamais versionné</text>
+      <path class="flux" d="M444 154 L424 154"/>
+      <path class="pointe" d="M416 154 l9 -5 v10 z"/>
+
+      <path class="flux" d="M246 180 L246 192"/>
+      <path class="pointe" d="M246 200 l-5 -9 h10 z"/>
+
+      <!-- 3. brut -->
+      <rect class="fichier" x="76" y="200" width="340" height="52" rx="9"/>
+      <text class="t1" x="96" y="222">data/brut/offres_&lt;ROME&gt;_&lt;date&gt;.json</text>
+      <text class="t2" x="96" y="240">la réponse de l'API, telle quelle</text>
+
+      <rect class="annexe" x="444" y="204" width="116" height="44" rx="8"/>
+      <text class="t1 petit" x="456" y="223">Git</text>
+      <text class="t2 petit" x="456" y="239">archive les relevés</text>
+      <path class="flux" d="M416 226 L436 226"/>
+      <path class="pointe" d="M444 226 l-9 -5 v10 z"/>
+
+      <path class="flux" d="M246 252 L246 306"/>
+      <path class="pointe" d="M246 314 l-5 -9 h10 z"/>
+
+      <!-- zone de traitement -->
+      <rect class="zone" x="62" y="286" width="368" height="308" rx="11"/>
+      <text class="zone-t" x="74" y="303">TRAITEMENT · scripts/traitement/</text>
+
+      <!-- 4. mise en forme -->
+      <rect class="script" x="76" y="314" width="340" height="52" rx="9"/>
+      <text class="t1" x="96" y="336">mise_en_forme.py</text>
+      <text class="t2" x="96" y="354">une ligne par offre, sans rappeler l'API</text>
+
+      <path class="flux" d="M246 366 L246 378"/>
+      <path class="pointe" d="M246 386 l-5 -9 h10 z"/>
+
+      <!-- 5. CSV -->
+      <rect class="fichier" x="76" y="386" width="340" height="52" rx="9"/>
+      <text class="t1" x="96" y="408">data/traite/offres_&lt;ROME&gt;_&lt;date&gt;.csv</text>
+      <text class="t2" x="96" y="426">un relevé par jour, jamais écrasé</text>
+
+      <path class="flux" d="M246 438 L246 450"/>
+      <path class="pointe" d="M246 458 l-5 -9 h10 z"/>
+
+      <!-- 6. generateur -->
+      <rect class="script" x="76" y="458" width="340" height="52" rx="9"/>
+      <text class="t1" x="96" y="480">generer_site.py</text>
+      <text class="t2" x="96" y="498">compte, croise, calcule l'empreinte</text>
+
+      <rect class="annexe" x="444" y="462" width="116" height="44" rx="8"/>
+      <text class="t1 petit" x="456" y="481">profil.json</text>
+      <text class="t2 petit" x="456" y="497">mes outils</text>
+      <path class="flux" d="M444 484 L424 484"/>
+      <path class="pointe" d="M416 484 l9 -5 v10 z"/>
+
+      <path class="flux" d="M246 510 L246 522"/>
+      <path class="pointe" d="M246 530 l-5 -9 h10 z"/>
+
+      <!-- 7. donnees -->
+      <rect class="fichier" x="76" y="530" width="340" height="52" rx="9"/>
+      <text class="t1" x="96" y="552">assets/donnees.js</text>
+      <text class="t2" x="96" y="570">tous les chiffres affichés sur le site</text>
+
+      <path class="flux" d="M246 582 L246 616"/>
+      <path class="pointe" d="M246 624 l-5 -9 h10 z"/>
+
+      <!-- 8. site -->
+      <rect class="sortie" x="76" y="624" width="340" height="52" rx="9"/>
+      <text class="t1 inverse" x="96" y="646">Le tableau de bord</text>
+      <text class="inverse sous-sortie" x="96" y="664">5 pages · aucun chiffre écrit à la main</text>
+
+      <!-- crochet de la tache d'extraction -->
+      <path class="crochet" d="M56 128 L44 128 L44 676 L56 676"/>
+      <text class="crochet-t" x="30" y="402" text-anchor="middle"
+            transform="rotate(-90 30 402)">TOUS LES 2 JOURS · 8 h</text>
+
+      <!-- etiquette du cadre d'audit -->
+      <text class="cadre-t" x="290" y="718" text-anchor="middle">AUDIT · LUNDI ET JEUDI À 9 h</text>
+      <text class="cadre-t2" x="290" y="733" text-anchor="middle">sécurité, reproductibilité, cohérence — il vérifie, il ne collecte pas</text>
+    </svg>
+    </div>
+
+    <div class="legende-schema">
+      <span><i class="externe"></i>source extérieure</span>
+      <span><i class="script"></i>script Python</span>
+      <span><i></i>fichier produit</span>
+      <span><i class="zone"></i>étape séparée</span>
+      <span><i class="sortie"></i>ce que vous lisez</span>
+    </div>
+  </section>
+
+  <div class="rangee large-etroit">
+    <section class="panneau">
+      <h2>La chaîne, de bout en bout</h2>
+      <p class="chapo">Chaque maillon fait une seule chose, et reste remplaçable.</p>
+      <div class="contenu">
+        <ul>
+          <li><strong>L'API France Travail</strong> répond à une requête et renvoie les offres.</li>
+          <li><strong>La collecte</strong> — un script les récupère et garde la réponse telle quelle dans <code>data/brut/</code>, sans rien transformer.</li>
+          <li><strong>Le traitement</strong> — un deuxième script met ce brut en forme, une ligne par offre, dans un CSV daté de <code>data/traite/</code> ; un troisième en tire les chiffres affichés ici.</li>
+          <li><strong>Git</strong> conserve chaque version : l'historique du dépôt devient l'archive du marché.</li>
+          <li><strong>GitHub Actions</strong> fait tourner la chaîne sur ses propres serveurs, sans que mon ordinateur soit allumé : le relevé tous les deux jours, l'audit deux fois par semaine.</li>
+        </ul>
+        <p>Aucun chiffre de ce site n'est écrit à la main. Tout vient du dernier fichier extrait — une page qui se périme toute seule ne vaut rien.</p>
+        <p><strong>Pourquoi séparer collecte et traitement.</strong> Tant que les deux étaient mêlés, la réponse de l'API était jetée sitôt mise en forme : une erreur dans la mise en forme devenait impossible à corriger sur les relevés passés. Le brut, lui, ne change jamais une fois écrit. Si une règle de mise en forme se révèle fausse, on la corrige et on la rejoue sur tout l'historique, sans rappeler l'API. Scripts et données sont rangés selon ce partage : <code>scripts/collecte/</code> écrit dans <code>data/brut/</code>, <code>scripts/traitement/</code> dans <code>data/traite/</code>.</p>
+        <p>Le brut est conservé depuis le relevé du <strong>21 octobre 2026</strong>. Les relevés antérieurs n'existent que sous leur forme mise en forme : l'API ne redonne jamais une offre retirée.</p>
+      </div>
+    </section>
+    <section class="panneau">
+      <h2>La source de ces chiffres</h2>
+      <div data-bloc="source"></div>
+    </section>
+  </div>
+
+  <div class="rangee moities">
+    <section class="panneau">
+      <h2>Le canal</h2>
+      <div class="contenu">
+        <p>L'API « Offres d'emploi v2 » de France Travail est officielle, gratuite, documentée et légale. Chaque offre revient avec son intitulé, son contrat, son salaire affiché, ses compétences, son lieu et sa date.</p>
+        <p>Trois métiers sont relevés à chaque passage : le chargé de marketing digital (<code>M1718</code>), métier principal de tout le tableau de bord, et deux voisins, chef de produit (<code>M1703</code>) et chargé de communication (<code>E1112</code>), suivis depuis le 21 octobre 2026. Les codes sont écrits à un seul endroit, <code>data/metiers.json</code>. Les voisins ne se mêlent à aucun chiffre du métier principal : ils n'apparaissent que dans la partie qui leur est consacrée, page <a href="marche.html">Le marché</a>.</p>
+        <p>Deux limites structurent la collecte : <strong>150 offres au maximum par appel</strong>, et <strong>1 150 par requête</strong>. Le nombre total réel se lit dans l'en-tête <code>Content-Range</code> de la réponse — c'est ce chiffre qui est affiché, même si le plafond de téléchargement était atteint. Il ne l'est pas ici.</p>
+      </div>
+    </section>
+    <section class="panneau">
+      <h2>Ce que je n'automatise pas</h2>
+      <div class="contenu">
+        <p>LinkedIn, l'APEC et Indeed interdisent l'extraction automatique dans leurs conditions d'utilisation. Je les consulte à la main ; je ne les aspire pas.</p>
+        <p>Les canaux qui pourront être ajoutés sont ceux qui l'autorisent : Adzuna, La Bonne Alternance, Arbeitnow, Jooble, Remotive, et les flux RSS quand ils existent — un flux RSS étant le canal le plus stable qui soit.</p>
+      </div>
+    </section>
+  </div>
+
+  <section class="panneau avertissement">
+    <h2>Les limites de ce qui est montré</h2>
+    <p class="chapo">Recalculées à chaque extraction.</p>
+    <div data-bloc="reserves"></div>
+  </section>
+
+  <div class="rangee large-etroit">
+    <section class="panneau">
+      <h2>Les données personnelles</h2>
+      <p class="chapo">RGPD et doctrine de la CNIL sur la prospection professionnelle.</p>
+      <div class="contenu">
+        <ul>
+          <li>Les dirigeants d'entreprise issus de Sirene, Pappers ou du BODACC sont des <strong>données publiques</strong>.</li>
+          <li>Le contact nominatif d'un salarié — adresse électronique, téléphone — est une <strong>donnée personnelle</strong>.</li>
+          <li>La prospection professionnelle est admise quand la finalité est claire — ici, <strong>une candidature</strong> —, qu'elle est en lien avec la fonction de la personne, et que celle-ci peut s'y opposer.</li>
+          <li>Aucun fichier n'est constitué pour être cédé. Aucun contact n'est pris hors du cadre professionnel de la personne.</li>
+          <li>La réponse brute de l'API est gardée telle quelle, à une exception : les blocs <code>contact</code> et <code>agence</code>, qui peuvent porter le nom d'un recruteur, sont retirés avant l'enregistrement. L'analyse ne s'en sert pas.</li>
+        </ul>
+        <p>Ce site n'affiche aucune donnée personnelle et ne dépose aucun traceur.</p>
+      </div>
+    </section>
+    <section class="panneau">
+      <h2>Reproduire l'extraction</h2>
+      <p class="chapo">Trois commandes remettent tout à jour.</p>
+      <div class="contenu">
+        <ul>
+          <li><code>pip install -r requirements.txt</code> — la première fois seulement, pour installer les bibliothèques.</li>
+          <li><code>python scripts/collecte/extraction_offres.py</code> — interroge l'API pour chacun des trois métiers et garde chaque réponse, datée du jour, dans <code>data/brut/</code>.</li>
+          <li><code>python scripts/traitement/mise_en_forme.py</code> — met chaque réponse brute en forme dans un CSV daté de <code>data/traite/</code>.</li>
+          <li><code>python scripts/traitement/generer_site.py</code> — relit le CSV le plus récent et régénère les données affichées.</li>
+        </ul>
+        <p>Les identifiants sont stockés dans un fichier <code>.env</code> exclu du dépôt, et ne figurent dans aucun script. Deux autres scripts, lancés ponctuellement, produisent le fond de carte à partir du découpage administratif de l'IGN et l'aperçu du CV à partir du PDF.</p>
+      </div>
+    </section>
+  </div>
+
+  <h2>La veille tourne sans moi</h2>
+  <p class="chapo">Ce qui a été fait une fois à la main doit se refaire tout seul. C'est la différence entre une recherche d'emploi et un outil de recherche d'emploi.</p>
+
+  <div class="rangee moities">
+    <section class="panneau">
+      <h2>Le relevé, tous les deux jours</h2>
+      <p class="chapo">Vers 8 h, sans intervention et sans mon ordinateur.</p>
+      <div class="contenu">
+        <p>Une automatisation GitHub Actions interroge l'API France Travail, garde sa réponse dans <code>data/brut/</code>, la met en forme dans <code>data/traite/</code>, régénère les chiffres du site, vérifie que les pages s'affichent toujours, puis enregistre le relevé dans l'historique Git avec l'écart par rapport au précédent.</p>
+        <p>Elle ne force rien. Si les identifiants ont expiré, si la souscription à l'API a sauté ou si l'audit trouve un défaut, elle s'arrête sans rien enregistrer — elle ne tente pas de contourner. Les identifiants ne figurent dans aucun fichier : GitHub les garde dans un coffre à secrets.</p>
+        <p>Chaque relevé s'ajoute aux précédents sans jamais les écraser. C'est cette accumulation, et elle seule, qui permettra de dire en novembre ce qui monte et ce qui recule.</p>
+      </div>
+    </section>
+
+    <section class="panneau">
+      <h2>Le relevé à la demande</h2>
+      <p class="chapo">Un bouton sur l'accueil, en plus de l'automatisme.</p>
+      <div class="contenu">
+        <p>Le bouton <strong>« Mettre à jour les données »</strong>, en haut du tableau de bord, rejoue exactement la même chaîne que l'automatisation GitHub : appel à l'API, mise en forme, régénération du site. Une dizaine de secondes, puis la page se recharge sur les chiffres du jour.</p>
+        <p>Il n'apparaît que si le site a été ouvert avec <code>ouvrir-le-site.command</code> sur Mac, ou <code>ouvrir-le-site.bat</code> sous Windows. Une page web n'a en effet aucun moyen de lancer un programme sur la machine : il faut un petit serveur qui écoute. Ouvert autrement, le site affiche simplement comment l'activer plutôt qu'un bouton sans effet.</p>
+        <p>Ce serveur n'écoute que sur cette machine, n'accepte qu'une seule demande sur une adresse précise, et ne lance que trois scripts connus — rien de ce que le navigateur envoie n'est exécuté. Il s'arrête en fermant la fenêtre.</p>
+      </div>
+    </section>
+  </div>
+
+  <div class="rangee moities">
+    <section class="panneau">
+      <h2>Une réserve sur « tous les deux jours »</h2>
+      <div class="contenu">
+        <p>La planification se fait sur les jours du mois : les 1<sup>er</sup>, 3, 5, 7 et ainsi de suite. L'intervalle est donc bien de deux jours, <strong>sauf au passage d'un mois</strong> : après le 31, le relevé suivant tombe le 1<sup>er</sup>, soit un seul jour plus tard.</p>
+        <p>L'écart entre deux relevés n'est donc pas rigoureusement constant. C'est sans conséquence pour lire une tendance sur deux mois, mais il faudra le savoir avant de calculer une variation moyenne par jour.</p>
+        <p>Autre limite : GitHub peut retarder un départ programmé de quelques minutes, parfois d'une heure aux heures chargées. Jusqu'au 21 octobre 2026, la chaîne tournait sur mon ordinateur et ne relevait rien quand il était éteint — d'où le trou dans la courbe entre le 25 septembre et le 8 octobre. Depuis le 22 octobre, elle tourne sur GitHub et ne dépend plus de lui.</p>
+      </div>
+    </section>
+  </div>
+
+  <h2>L'entretien du site</h2>
+  <p class="chapo">Un projet qui tourne sans surveillance finit par se dégrader sans qu'on s'en aperçoive.</p>
+
+  <div class="rangee large-etroit">
+    <section class="panneau">
+      <h2>Ce que l'audit vérifie</h2>
+      <p class="chapo">Sept familles de contrôles, dans <code>scripts/outils/audit.py</code>.</p>
+      <div class="contenu">
+        <ul>
+          <li><strong>Sécurité du dépôt</strong> — qu'aucun identifiant n'ait jamais été enregistré dans l'historique, que le <code>.gitignore</code> protège bien les fichiers sensibles, qu'aucune clé ne soit écrite en dur dans le code.</li>
+          <li><strong>Bibliothèques</strong> — versions périmées, et surtout <strong>failles de sécurité connues</strong> dans les composants utilisés, via l'outil <code>pip-audit</code>.</li>
+          <li><strong>Scripts</strong> — que chacun soit rangé selon son rôle (collecte, traitement ou outils), qu'il compile et que ses dépendances soient présentes.</li>
+          <li><strong>Reproductibilité</strong> — que deux générations successives produisent un fichier identique, et que la mise en forme rejouée sur le brut redonne exactement les CSV enregistrés.</li>
+          <li><strong>Cohérence du site</strong> — blocs sans code pour les remplir, chiffres insérés dans les phrases mais absents des données, liens cassés, styles écrits dans le HTML, classes inutilisées, accessibilité.</li>
+          <li><strong>Données</strong> — présence des fiches de métadonnées, colonnes vides, écarts de format entre extractions.</li>
+          <li><strong>Poids</strong> — taille de ce que le navigateur doit télécharger.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="panneau">
+      <h2>Quand il tourne</h2>
+      <div class="contenu">
+        <p><strong>Lundi et jeudi vers 9 h</strong>, automatiquement, sur GitHub Actions. L'audit vérifie aussi que la collecte tourne toujours — un relevé vieux de plus de quatre jours est le signe que quelque chose s'est arrêté.</p>
+        <p>Il ne corrige rien de lui-même : s'il trouve un problème, il passe au rouge et GitHub m'envoie un courriel. Une faille de sécurité, un secret exposé ou une modification du contenu rédactionnel se décident à la main, pas d'autorité.</p>
+        <p>L'audit se lance aussi à la main, avant un rendu :</p>
+        <ul>
+          <li><code>python scripts/outils/audit.py</code></li>
+        </ul>
+        <p>Il se termine par un verdict clair et un code de sortie : zéro si tout est sain, un s'il faut agir.</p>
+      </div>
+    </section>
+  </div>
+
+  <section class="panneau avertissement">
+    <h2>Pourquoi cet audit existe</h2>
+    <div class="contenu">
+      <p>Il n'est pas décoratif. Le premier passage, le 23 septembre 2026, a révélé un défaut invisible à l'écran : <strong>la génération n'était pas reproductible</strong>. Deux exécutions sur les mêmes données produisaient deux fichiers différents, parce que l'ordre de parcours d'un ensemble Python varie d'une fois sur l'autre.</p>
+      <p>Conséquence : chaque lancement réécrivait les cinq pages du site même quand rien n'avait changé. L'historique Git — qui est censé être l'archive du marché — se serait rempli de modifications fantômes, rendant impossible de distinguer un vrai changement du bruit.</p>
+      <p>Ce genre de défaut ne se voit pas en regardant le site. Il se voit en le vérifiant.</p>
+    </div>
+  </section>
+
+  <section class="panneau">
+    <h2>Sources</h2>
+    <div class="contenu">
+      <ul>
+        <li><a href="https://francetravail.io" target="_blank" rel="noopener">API France Travail — Offres d'emploi v2</a>, canal de collecte.</li>
+        <li><a href="https://candidat.francetravail.fr/metierscope/" target="_blank" rel="noopener">MétierScope</a>, pour la vérification des codes ROME.</li>
+        <li><a href="https://github.com/gregoiredavid/france-geojson" target="_blank" rel="noopener">france-geojson</a>, fond de carte issu du découpage administratif de l'IGN.</li>
+        <li><a href="https://www.cnil.fr" target="_blank" rel="noopener">CNIL</a>, doctrine sur la prospection professionnelle.</li>
+      </ul>
+    </div>
+  </section>
+
+  <p data-bloc="pied"></p>
+
+</main>
+
+<script src="assets/carte_france.js"></script>
+<script src="assets/donnees.js?v=8a4b89a2"></script>
+<script src="assets/site.js?v=43b064d8"></script>
+</body>
+</html>

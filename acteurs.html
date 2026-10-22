@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Acteurs — Marché du chargé de marketing digital</title>
+<link rel="stylesheet" href="assets/style.css?v=1313e41a">
+</head>
+<body>
+
+<main class="principal">
+
+  <div class="entete-page">
+    <div>
+      <p class="fil">Acteurs</p>
+      <h1>Qui recrute ce métier</h1>
+      <p class="sous-titre">Derrière chaque offre, une entreprise. Et derrière le silence, un marché entier.</p>
+    </div>
+    <div data-bloc="horodatage"></div>
+  </div>
+
+  <div class="kpis">
+    <div class="kpi principal">
+      <div class="valeur"><span data-valeur="acteurs.entreprises_distinctes"></span></div>
+      <div class="etiquette">entreprises distinctes identifiées</div>
+    </div>
+    <div class="kpi">
+      <div class="valeur"><span data-valeur="acteurs.une_seule_offre_pct"></span> %</div>
+      <div class="etiquette">n'ont publié qu'une seule offre</div>
+    </div>
+    <div class="kpi">
+      <div class="valeur"><span data-valeur="acteurs.offres_anonymes_pct"></span> %</div>
+      <div class="etiquette">des offres ne nomment pas l'employeur</div>
+    </div>
+    <div class="kpi">
+      <div class="valeur"><span data-valeur="acteurs.offres_nommees"></span></div>
+      <div class="etiquette">offres exploitables sur <span data-valeur="stats.total"></span></div>
+    </div>
+  </div>
+
+  <div class="rangee large-etroit">
+    <section class="panneau">
+      <h2>Les employeurs qui publient le plus</h2>
+      <p class="chapo">Sur les <span data-valeur="acteurs.offres_nommees"></span> offres qui nomment leur entreprise.</p>
+      <div data-bloc="employeurs" data-combien="12"></div>
+    </section>
+
+    <section class="panneau avertissement">
+      <h2>Un marché atomisé</h2>
+      <div class="contenu">
+        <p><strong><span data-valeur="acteurs.une_seule_offre"></span> entreprises sur <span data-valeur="acteurs.entreprises_distinctes"></span> n'ont publié qu'une seule offre.</strong> Il n'y a pas de gros recruteur récurrent sur ce métier : il se recrute à l'unité, partout, par des structures qui n'en cherchent qu'un à la fois.</p>
+        <p>Conséquence directe pour moi : viser « les entreprises qui recrutent des chargés de marketing digital » n'a pas de sens, il n'y a pas de liste stable. Ce qui compte, c'est d'être présent au moment où l'une d'elles publie — d'où la veille automatique — et d'aller chercher celles qui ne publient pas.</p>
+        <p>L'exception est <strong>Collective.work</strong>, qui publie à elle seule près d'une offre sur six, réparties sur neuf villes. Ce n'est pas un employeur mais une plateforme de mise en relation : ses annonces gonflent le volume apparent du marché salarié.</p>
+      </div>
+    </section>
+  </div>
+
+  <div class="rangee moities">
+    <section class="panneau">
+      <h2>Les entreprises de mes zones</h2>
+      <p class="chapo">Celles sur lesquelles je peux agir aujourd'hui.</p>
+      <div data-bloc="zones-acteurs"></div>
+    </section>
+
+    <section class="panneau">
+      <h2>Dans quels secteurs</h2>
+      <p class="chapo">Le secteur d'activité déclaré, quand il l'est.</p>
+      <div data-bloc="secteurs"></div>
+      <div class="contenu">
+        <p>Les agences de placement et de travail temporaire arrivent en tête : une part du marché passe par des intermédiaires plutôt que par l'employeur final. C'est cohérent avec le tiers d'offres anonymes — ce sont souvent les mêmes.</p>
+      </div>
+    </section>
+  </div>
+
+  <section class="panneau">
+    <h2>Le tiers silencieux</h2>
+    <p class="chapo">Ce que les offres anonymes changent à la lecture.</p>
+    <div class="contenu">
+      <p><span data-valeur="acteurs.offres_anonymes"></span> offres sur <span data-valeur="stats.total"></span> ne donnent aucun nom d'entreprise. Ce sont, pour l'essentiel, des cabinets de recrutement qui protègent leur client, ou des employeurs qui ne veulent pas afficher qu'ils recrutent.</p>
+      <p>Tous les comptages de cette page portent donc sur <span data-valeur="acteurs.offres_nommees"></span> offres, pas sur <span data-valeur="stats.total"></span>. Une entreprise très présente sur le marché mais qui recruterait uniquement par cabinet interposé serait totalement invisible ici. C'est une limite, pas un détail.</p>
+    </div>
+  </section>
+
+  <h2>Le marché caché</h2>
+  <p class="chapo">Les entreprises qui auraient besoin de ce métier sans jamais publier d'annonce.</p>
+  <section class="panneau">
+    <div class="contenu">
+      <p>Les sites d'offres ne montrent que les entreprises qui publient. L'essentiel du recrutement — en PME surtout — ne passe jamais par une annonce. Et le relevé du jour le confirme durement : <strong>zéro offre dans le Puy-de-Dôme</strong>, alors que le département compte des milliers d'établissements dont une partie a besoin d'un profil marketing sans le formuler.</p>
+      <p>La méthode : partir des entreprises elles-mêmes plutôt que de leurs annonces, via l'API « Recherche d'entreprises » de l'État — gratuite, sans clé, filtrable par département et par code d'activité. Puis repérer celles qui bougent, celles dont le site est daté, celles qui n'ont aucune présence en ligne.</p>
+      <p><strong>C'est le chantier en cours.</strong> Cette section se remplira avec la base des entreprises du 63 et la mission choisie pour la faire parler.</p>
+    </div>
+  </section>
+
+  <h2>Les professionnels qui exercent</h2>
+  <p class="chapo">Des personnes, pas des données.</p>
+  <section class="panneau">
+    <div class="contenu">
+      <p>Le troisième volet : identifier sur LinkedIn celles et ceux qui occupent ce poste dans les entreprises repérées, les suivre, et engager la conversation. Ce travail se fait à la main — LinkedIn interdit l'extraction automatique, et je m'y tiens.</p>
+      <p><strong>Ces personnes n'apparaîtront pas nommément sur ce site.</strong> Les dirigeants d'entreprise sont des données publiques ; un salarié identifié par son nom et son poste ne l'est pas. Ce que cette page pourra montrer, ce sont des constats agrégés — quels intitulés exacts portent les gens en poste, quels parcours y mènent — pas un fichier de personnes.</p>
+    </div>
+  </section>
+
+  <p data-bloc="pied"></p>
+
+</main>
+
+<script src="assets/carte_france.js"></script>
+<script src="assets/donnees.js?v=8a4b89a2"></script>
+<script src="assets/site.js?v=43b064d8"></script>
+</body>
+</html>
