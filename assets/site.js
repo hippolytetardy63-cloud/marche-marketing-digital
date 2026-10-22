@@ -523,60 +523,129 @@
       "<a class='lien-suite' href='marche.html'>Voir les " + D.stats.total + " offres →</a>";
   }
 
+  /* Âge d'une offre en jours, compté depuis la date du relevé (et non
+   * depuis aujourd'hui) : la page dit la même chose quel que soit le jour
+   * où on la lit. */
+  function ageEnJours(o) {
+    var a = Date.parse(o.date), b = Date.parse(D.meta.date);
+    return isNaN(a) || isNaN(b) ? null : Math.max(0, Math.round((b - a) / 86400000));
+  }
+
+  function sansAccent(t) {
+    return String(t || "").normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase();
+  }
+
+  // Jauge de correspondance ATS : la valeur est écrite, la barre l'illustre.
+  function jaugeAts(ats) {
+    if (!ats || ats.score == null) {
+      return "<div class='jauge-ats vide' title='Aucun outil reconnu dans l’annonce'>" +
+        "<span class='jauge-valeur'>—</span><span class='jauge-legende'>ATS</span></div>";
+    }
+    var n = ats.acquis.length + ats.manquants.length;
+    return "<div class='jauge-ats' title='Mon CV couvre " + ats.acquis.length + " mot(s)-clé(s) sur " + n + "'>" +
+      "<span class='jauge-valeur'>" + ats.score + " %</span>" +
+      "<span class='jauge-piste'><span class='jauge-remplie' data-largeur='" + ats.score + "'></span></span>" +
+      "<span class='jauge-legende'>ATS · " + ats.acquis.length + "/" + n + "</span></div>";
+  }
+
+  function carteCompacte(o) {
+    var age = ageEnJours(o);
+    var badges = (age != null && age <= 2 ? "<span class='etiq nouveau'>Nouveau</span>" : "") +
+      "<span class='etiq'>" + echapper(o.contrat) + "</span>" +
+      (age != null ? "<span class='etiq gris'>" + (age === 0 ? "aujourd'hui" : "il y a " + age + " j") + "</span>" : "");
+    return "<details class='offre compacte'><summary>" +
+      "<div class='compacte-texte'>" +
+        "<h3>" + echapper(o.intitule) + "</h3>" +
+        "<p class='infos'>" + echapper(o.lieu) + "</p>" +
+        "<div class='etiquettes'>" + badges + "</div>" +
+      "</div>" + jaugeAts(o.ats) + "</summary>" +
+      "<div class='compacte-detail'>" +
+        "<p class='infos'>" + echapper(o.entreprise || "entreprise non précisée") +
+          " · publiée le " + formaterDate(o.date) + " · " +
+          echapper(o.salaire || "salaire non affiché") + "</p>" +
+        blocAts(o.ats) +
+        "<a class='lien-suite' href='" + echapper(o.url) + "' target='_blank' rel='noopener'>Ouvrir l'annonce sur France Travail ↗</a>" +
+      "</div></details>";
+  }
+
   function poserOffres(el) {
     var miens = D.mes_departements;
-    var PAS = 20, affichees = PAS, actif = "toutes";
+    var PAS = 20, affichees = PAS;
+    var etat = { texte: "", tri: "date", actifs: {} };
 
     var filtres = [
-      ["toutes", "Toutes", function () { return true; }],
-      ["cdi", "CDI seulement", function (o) { return o.contrat === "CDI"; }],
-      ["zones", "Mes zones (" + Object.keys(miens).join(", ") + ")", function (o) {
-        return Object.prototype.hasOwnProperty.call(miens, o.departement);
-      }]
+      ["cdi", "CDI", function (o) { return o.contrat === "CDI"; }],
+      ["zones", "Mes zones", function (o) { return Object.prototype.hasOwnProperty.call(miens, o.departement); }],
+      ["salaire", "Salaire affiché", function (o) { return o.salaire_mensuel != null; }],
+      ["recent", "Moins d'un mois", function (o) { var a = ageEnJours(o); return a != null && a <= 30; }]
     ];
+    var tris = {
+      date: function (a, b) { return a.date < b.date ? 1 : a.date > b.date ? -1 : 0; },
+      // Score d'abord ; à égalité, l'offre où je couvre le plus de
+      // mots-clés passe devant (5 sur 5 vaut mieux que 1 sur 1), puis la
+      // plus récente.
+      ats: function (a, b) {
+        var sa = a.ats && a.ats.score != null ? a.ats.score : -1, sb = b.ats && b.ats.score != null ? b.ats.score : -1;
+        if (sa !== sb) return sb - sa;
+        var na = a.ats ? a.ats.acquis.length : 0, nb = b.ats ? b.ats.acquis.length : 0;
+        if (na !== nb) return nb - na;
+        return a.date < b.date ? 1 : a.date > b.date ? -1 : 0;
+      },
+      salaire: function (a, b) { return (b.salaire_mensuel || 0) - (a.salaire_mensuel || 0); }
+    };
 
     el.innerHTML =
-      "<div class='filtres'>" + filtres.map(function (f) {
-        return "<button type='button' data-f='" + f[0] + "' aria-pressed='" +
-          (f[0] === actif) + "'>" + f[1] + "</button>";
-      }).join("") + "</div><div class='liste'></div><button class='plus' hidden></button>";
+      "<div class='barre-outils'>" +
+        "<input type='search' class='recherche' placeholder='Rechercher : intitulé, entreprise, ville…' aria-label='Rechercher une offre'>" +
+        "<div class='filtres'>" + filtres.map(function (f) {
+          return "<button type='button' data-f='" + f[0] + "' aria-pressed='false'>" + f[1] + "</button>";
+        }).join("") + "</div>" +
+        "<label class='tri'>Trier par <select>" +
+          "<option value='date'>plus récentes</option>" +
+          "<option value='ats'>meilleur score ATS</option>" +
+          "<option value='salaire'>meilleur salaire</option>" +
+        "</select></label>" +
+        "<p class='compte' aria-live='polite'></p>" +
+      "</div><div class='liste'></div><button class='plus' hidden></button>";
 
-    var zoneFiltres = el.querySelector(".filtres");
-    var zoneListe = el.querySelector(".liste");
-    var boutonPlus = el.querySelector(".plus");
+    var zoneListe = el.querySelector(".liste"), boutonPlus = el.querySelector(".plus");
+    var compte = el.querySelector(".compte");
 
     function selection() {
-      var f = filtres.filter(function (x) { return x[0] === actif; })[0];
-      return D.offres.filter(f[2]);
+      var mot = sansAccent(etat.texte.trim());
+      return D.offres.filter(function (o) {
+        var garde = filtres.every(function (f) { return !etat.actifs[f[0]] || f[2](o); });
+        return garde && (!mot || sansAccent(o.intitule + " " + o.entreprise + " " + o.lieu).indexOf(mot) >= 0);
+      }).sort(tris[etat.tri]);
     }
 
     function dessiner() {
       var liste = selection();
+      compte.textContent = liste.length + " offre" + (liste.length > 1 ? "s" : "") + " sur " + D.offres.length;
       if (!liste.length) {
-        zoneListe.innerHTML = "<p class='vide-message'>Aucune offre ne correspond à ce filtre aujourd'hui.</p>";
+        zoneListe.innerHTML = "<p class='vide-message'>Aucune offre ne correspond à ces critères.</p>";
         boutonPlus.hidden = true;
         return;
       }
-      zoneListe.innerHTML = liste.slice(0, affichees).map(carteOffre).join("");
+      zoneListe.innerHTML = liste.slice(0, affichees).map(carteCompacte).join("");
+      // Largeur des jauges posée par le script : aucun style écrit dans le HTML.
+      Array.prototype.forEach.call(zoneListe.querySelectorAll(".jauge-remplie"), function (j) {
+        j.style.width = j.dataset.largeur + "%";
+      });
       var reste = liste.length - affichees;
       boutonPlus.hidden = reste <= 0;
-      if (reste > 0) {
-        boutonPlus.textContent = "Afficher " + Math.min(reste, PAS) +
-          " offres de plus (" + reste + " restantes)";
-      }
+      if (reste > 0) boutonPlus.textContent = "Afficher " + Math.min(reste, PAS) + " offres de plus (" + reste + " restantes)";
     }
 
-    zoneFiltres.addEventListener("click", function (e) {
-      var bouton = e.target.closest("button");
-      if (!bouton) return;
-      actif = bouton.dataset.f;
-      affichees = PAS;
-      Array.prototype.forEach.call(zoneFiltres.querySelectorAll("button"), function (b) {
-        b.setAttribute("aria-pressed", String(b.dataset.f === actif));
-      });
-      dessiner();
+    el.querySelector(".filtres").addEventListener("click", function (e) {
+      var b = e.target.closest("button");
+      if (!b) return;
+      etat.actifs[b.dataset.f] = !etat.actifs[b.dataset.f];
+      b.setAttribute("aria-pressed", String(etat.actifs[b.dataset.f]));
+      affichees = PAS; dessiner();
     });
-
+    el.querySelector(".recherche").addEventListener("input", function (e) { etat.texte = e.target.value; affichees = PAS; dessiner(); });
+    el.querySelector(".tri select").addEventListener("change", function (e) { etat.tri = e.target.value; dessiner(); });
     boutonPlus.addEventListener("click", function () { affichees += PAS; dessiner(); });
     dessiner();
   }
