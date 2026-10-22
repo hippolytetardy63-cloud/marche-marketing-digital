@@ -24,11 +24,11 @@
   var PAGES = [
     { groupe: "Le marché" },
     { fichier: "index.html",       titre: "Accueil",     icone: "accueil" },
-    { fichier: "metier.html",      titre: "Le métier",   icone: "metier" },
-    { fichier: "marche.html",      titre: "Le marché",   icone: "marche" },
+    { fichier: "metier.html",      titre: "Le métier",   icone: "metier",  court: "Métier" },
+    { fichier: "marche.html",      titre: "Le marché",   icone: "marche",  court: "Marché" },
     { fichier: "acteurs.html",     titre: "Acteurs",     icone: "acteurs" },
     { groupe: "Moi" },
-    { fichier: "profil.html",      titre: "Mon profil",  icone: "profil" },
+    { fichier: "profil.html",      titre: "Mon profil",  icone: "profil",  court: "Profil" },
     { groupe: "Le site" },
     { fichier: "methode.html",     titre: "Méthode",     icone: "methode" }
   ];
@@ -74,8 +74,25 @@
 
   // ------------------------------------------------------- menu et ossature
 
+  // Le chiffre clé de chaque page, affiché dans le menu. Tous viennent des
+  // données du jour ; la bulle d'aide dit ce qu'ils comptent.
+  function chiffresDuMenu() {
+    if (!D) return {};
+    var scores = D.offres.map(function (o) { return o.ats && o.ats.score; })
+      .filter(function (s) { return s != null; });
+    var couverture = scores.length ? Math.round(scores.reduce(function (a, b) { return a + b; }, 0) / scores.length) : null;
+    var c = {
+      "marche.html": [D.stats.total, D.stats.total + " offres au dernier relevé"],
+      "acteurs.html": [D.acteurs.entreprises_distinctes, D.acteurs.entreprises_distinctes + " entreprises qui recrutent"],
+      "methode.html": [(D.serie || []).length, (D.serie || []).length + " relevés depuis le début"]
+    };
+    if (couverture != null) c["profil.html"] = [couverture + " %", "Mon CV couvre en moyenne " + couverture + " % des mots-clés des offres"];
+    return c;
+  }
+
   function poserOssature() {
     var courante = pageCourante();
+    var chiffres = chiffresDuMenu();
     var pageActive = PAGES.filter(function (p) { return p.fichier && p.fichier === courante; })[0];
     var titreCourant = pageActive ? pageActive.titre : "";
 
@@ -88,8 +105,17 @@
           "<span>" + echapper(p.titre) + "</span></a>";
       }
       var actif = p.fichier === courante ? " aria-current='page'" : "";
+      var c = chiffres[p.fichier];
       return "<a href='" + p.fichier + "'" + actif + ">" + icone(p.icone) +
-        "<span>" + echapper(p.titre) + "</span></a>";
+        "<span>" + echapper(p.titre) + "</span>" +
+        (c ? "<span class='badge-nav' title='" + echapper(c[1]) + "'>" + c[0] + "</span>" : "") + "</a>";
+    }).join("");
+
+    // Barre d'onglets en bas de l'écran, pour les petits écrans : les mêmes
+    // pages que le menu, avec un intitulé court.
+    var onglets = PAGES.filter(function (p) { return p.fichier && !p.bientot; }).map(function (p) {
+      return "<a href='" + p.fichier + "'" + (p.fichier === courante ? " aria-current='page'" : "") + ">" +
+        icone(p.icone) + "<span>" + echapper(p.court || p.titre) + "</span></a>";
     }).join("");
 
     var rome = D && D.meta.code_rome ? "<span class='rome'>ROME " + echapper(D.meta.code_rome) + "</span>" : "";
@@ -117,6 +143,12 @@
       "aria-controls='barre-laterale' aria-label='Ouvrir le menu'>" +
       "<svg viewBox='0 0 24 24'><path d='M4 7h16M4 12h16M4 17h16'/></svg></button>" +
       "<span class='titre'>" + echapper(titreCourant) + "</span>";
+
+    var barreOnglets = document.createElement("nav");
+    barreOnglets.className = "onglets-bas";
+    barreOnglets.setAttribute("aria-label", "Navigation rapide");
+    barreOnglets.innerHTML = onglets;
+    document.body.appendChild(barreOnglets);
 
     document.body.insertBefore(voile, document.body.firstChild);
     document.body.insertBefore(aside, document.body.firstChild);
@@ -233,6 +265,36 @@
     el.className = "a-retenir";
     el.innerHTML = "<p class='a-retenir-titre'>À retenir aujourd'hui</p><ul>" +
       phrases.map(function (p) { return "<li>" + echapper(p).replace(/&#39;/g, "'") + "</li>"; }).join("") + "</ul>";
+  }
+
+  /* Sommaire collant des pages longues : une pastille par titre de section,
+   * qui reste en haut de l'écran et signale la section en cours. */
+  function poserSommairePage(el) {
+    var titres = Array.prototype.slice.call(document.querySelectorAll(".principal h2"));
+    if (titres.length < 3) { el.remove(); return; }
+    var pris = {};
+    var liens = titres.map(function (h) {
+      var id = sansAccent(h.textContent).replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "") || "section";
+      while (pris[id]) id += "-bis";
+      pris[id] = true;
+      h.id = h.id || id;
+      return "<a href='#" + h.id + "'>" + echapper(h.textContent) + "</a>";
+    });
+    el.className = "sommaire-page";
+    el.innerHTML = "<div class='sommaire-defile'>" + liens.join("") + "</div>";
+    var parId = {};
+    Array.prototype.forEach.call(el.querySelectorAll("a"), function (a) { parId[a.hash.slice(1)] = a; });
+    if (!("IntersectionObserver" in window)) return;
+    var observateur = new IntersectionObserver(function (entrees) {
+      entrees.forEach(function (e) {
+        if (!e.isIntersecting) return;
+        Array.prototype.forEach.call(el.querySelectorAll("a"), function (a) { a.removeAttribute("aria-current"); });
+        var a = parId[e.target.id];
+        a.setAttribute("aria-current", "true");
+        a.scrollIntoView({ block: "nearest", inline: "nearest" });
+      });
+    }, { rootMargin: "-20% 0px -70% 0px" });
+    titres.forEach(function (h) { observateur.observe(h); });
   }
 
   function poserKpis(el) {
@@ -1174,6 +1236,7 @@
     "bouton-maj": poserBoutonMaj,
     "evolution": poserEvolution,
     "vedette": poserVedette,
+    "sommaire-page": poserSommairePage,
     "a-retenir": poserARetenir,
     "mots-metier": poserMotsMetier,
     "salaires": poserSalaires,
