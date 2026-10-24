@@ -747,6 +747,17 @@ td code, .contenu code { font-size: .85em; background: var(--accent-doux); color
    contenu : on l'y autorise, sinon un tableau large pousse tout le panneau. */
 .rangee > *, .panneau, .principal > section { min-width: 0; }
 
+/* ================= ma position, et la preuve parmi les actions ================= */
+
+.panneau.position { border-color: var(--accent); margin-bottom: 18px; }
+.panneau.position .rangee { margin: 14px 0 0; }
+.panneau.position h3 { margin: 0 0 8px; color: var(--accent); font-size: .92rem; }
+.panneau.position li { margin-bottom: 8px; }
+.action .preuve {
+  margin-top: 8px; padding: 8px 12px; font-size: .84rem;
+  border: 1px solid var(--accent); border-radius: 12px; background: var(--accent-doux);
+}
+
 /* ================= mes offres ================= */
 
 .bouton-enregistrer {
