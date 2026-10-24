@@ -737,6 +737,16 @@ td code, .contenu code { font-size: .85em; background: var(--accent-doux); color
 .js-bornes { display: flex; justify-content: space-between; gap: 10px; font-size: .72rem; color: var(--texte-doux); }
 .js-bornes span:nth-child(2) { text-align: center; }
 
+/* Sur petit écran, un tableau trop large défile dans son propre cadre :
+   il ne doit jamais élargir la page (la barre d'onglets du bas, fixée,
+   s'étalerait alors hors de l'écran). */
+@media (max-width: 620px) {
+  .principal table { display: block; max-width: 100%; overflow-x: auto; }
+}
+/* Une case de grille ne rétrécit pas, par défaut, sous la largeur de son
+   contenu : on l'y autorise, sinon un tableau large pousse tout le panneau. */
+.rangee > *, .panneau, .principal > section { min-width: 0; }
+
 /* ================= mes offres ================= */
 
 .bouton-enregistrer {

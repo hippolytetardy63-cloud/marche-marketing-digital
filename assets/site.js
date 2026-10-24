@@ -312,7 +312,7 @@
     });
     var sal = D.salaires, cible = sal && sal.reperes.filter(function (r) { return r.nom === "Ma cible"; })[0];
     if (sal) {
-      petites.push({ v: euros(sal.mediane), l: "salaire médian des CDI" +
+      petites.push({ v: euros(sal.mediane), l: "salaire affiché médian (CDI)" +
         (cible ? " · ma cible : " + euros(cible.montant) : "") });
     }
     el.className = "vedette";
@@ -353,7 +353,7 @@
     }
     var S = D.salaires, cible = S && S.reperes.filter(function (r) { return r.nom === "Ma cible"; })[0];
     if (cible) {
-      phrases.push(cible.pct + " % des CDI qui affichent un salaire paient au moins ma cible de " +
+      phrases.push(cible.pct + " % des salaires affichés en CDI atteignent au moins ma cible de " +
         euros(cible.montant) + ".");
     }
     if (!phrases.length) { el.remove(); return; }
@@ -938,7 +938,7 @@
         "<label class='tri'>Trier par <select>" +
           "<option value='date'>plus récentes</option>" +
           "<option value='ats'>meilleur score ATS</option>" +
-          "<option value='salaire'>meilleur salaire</option>" +
+          "<option value='salaire'>meilleur salaire affiché</option>" +
         "</select></label>" +
         "<p class='compte' aria-live='polite'></p>" +
       "</div><div class='liste'></div><button class='plus' hidden></button>";
@@ -1398,18 +1398,18 @@
     var bas = Math.floor((Math.min.apply(null, valeurs) - 400) / 100) * 100;
     var haut = Math.ceil((Math.max.apply(null, valeurs) + 400) / 100) * 100;
     function pos(v) { return ((v - bas) / (haut - bas) * 100).toFixed(1); }
-    var description = "Moitié centrale des salaires de " + euros(S.quart_bas) + " à " + euros(S.quart_haut) +
+    var description = "Moitié centrale des salaires affichés de " + euros(S.quart_bas) + " à " + euros(S.quart_haut) +
       ", médiane " + euros(S.mediane) + " ; " + reperes.map(function (r) { return r.nom.toLowerCase() + " " + euros(r.montant); }).join(", ");
     return "<div class='jauge-salaires' role='img' aria-label='" + echapper(description) + "'>" +
       "<div class='js-piste'>" +
         "<span class='js-bande' data-gauche='" + pos(S.quart_bas) + "' data-largeur='" + (pos(S.quart_haut) - pos(S.quart_bas)).toFixed(1) + "'></span>" +
-        "<span class='js-mediane' data-gauche='" + pos(S.mediane) + "'><span>médiane " + euros(S.mediane) + "</span></span>" +
+        "<span class='js-mediane' data-gauche='" + pos(S.mediane) + "'><span>médiane affichée " + euros(S.mediane) + "</span></span>" +
         reperes.map(function (r, i) {
           return "<span class='js-repere " + (i % 2 ? "dessous" : "dessus") + "' data-gauche='" + pos(r.montant) + "'>" +
             "<span>" + echapper(r.nom.replace(/^Mon |^Ma /, "")) + " " + euros(r.montant) + "</span></span>";
         }).join("") +
       "</div>" +
-      "<div class='js-bornes'><span>" + euros(bas) + "</span><span>la moitié des offres paie entre " +
+      "<div class='js-bornes'><span>" + euros(bas) + "</span><span>la moitié des salaires affichés se situe entre " +
         euros(S.quart_bas) + " et " + euros(S.quart_haut) + "</span><span>" + euros(haut) + "</span></div>" +
     "</div>";
   }
@@ -1431,17 +1431,17 @@
     }
     el.innerHTML =
       "<p class='chiffre-cle'><strong>" + euros(S.mediane) + "</strong> brut par mois : " +
-        "le salaire médian des CDI. La moitié des offres se situe entre " +
+        "le salaire affiché médian des CDI. La moitié des salaires affichés se situe entre " +
         euros(S.quart_bas) + " et " + euros(S.quart_haut) + ".</p>" +
       jaugeSalaires(S) +
-      tableau("Où tombent mes repères", ["Repère", "Montant", "Paient au moins"],
+      tableau("Où tombent mes repères", ["Repère", "Montant", "Salaires affichés ≥"],
         S.reperes.map(function (r) {
           return "<tr><td>" + echapper(r.nom) + "</td><td>" + euros(r.montant) + "</td><td>" +
             r.pct + " % <span class='sous-valeur'>" + r.offres + " sur " + S.retenues + "</span></td></tr>";
         })) +
-      tableau("Selon l'expérience demandée", ["Expérience", "Offres", "Médiane"],
+      tableau("Selon l'expérience demandée", ["Expérience", "Offres", "Médiane affichée"],
         S.par_experience.map(groupe)) +
-      tableau("Selon le lieu", ["Lieu", "Offres", "Médiane"], S.par_zone.map(groupe)) +
+      tableau("Selon le lieu", ["Lieu", "Offres", "Médiane affichée"], S.par_zone.map(groupe)) +
       "<p class='note-graphe'>" + S.retenues + " salaires comparables : les CDI distincts vus du " +
         formaterDate(S.periode.debut) + " au " + formaterDate(S.periode.fin) + " (" +
         S.cdi_distincts + "), dont " + S.avec_salaire + " affichent un salaire ; " +
