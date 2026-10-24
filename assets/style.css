@@ -758,6 +758,11 @@ td code, .contenu code { font-size: .85em; background: var(--accent-doux); color
   border: 1px solid var(--accent); border-radius: 12px; background: var(--accent-doux);
 }
 
+.panneau.source-externe { margin-bottom: 18px; }
+.panneau.source-externe .rangee { margin: 14px 0 0; }
+.panneau.source-externe h3 { margin: 0 0 8px; font-size: .92rem; color: var(--accent); }
+.panneau.source-externe li { margin-bottom: 8px; }
+
 /* ================= mes offres ================= */
 
 .bouton-enregistrer {

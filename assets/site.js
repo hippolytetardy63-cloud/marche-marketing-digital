@@ -138,7 +138,7 @@
     [/offre|cdi|contrat/, "M4 8h16v11H4zM9 8V5h6v3M4 13h16"],
     [/acteur|entreprise|employeur|recrut|secteur|cache/, "M4 21V5l8-2v18M12 9h8v12M8 8h.01M8 12h.01M8 16h.01M16 13h.01M16 17h.01"],
     [/professionnel|demander|personnel|rgpd/, "M9 11a3 3 0 1 0 0-6 3 3 0 0 0 0 6zM3 20c0-3 3-5 6-5s6 2 6 5M16 5a3 3 0 0 1 0 6M18 15c2 .5 3 2.5 3 5"],
-    [/source|canal|methode|chaine|fonctionnement|script|reproduire|extraction|audit|entretien/, "M5 6c0-1.7 3.1-3 7-3s7 1.3 7 3-3.1 3-7 3-7-1.3-7-3zM5 6v12c0 1.7 3.1 3 7 3s7-1.3 7-3V6M5 12c0 1.7 3.1 3 7 3s7-1.3 7-3"],
+    [/apec|wef|etude|en dit|source|canal|methode|chaine|fonctionnement|script|reproduire|extraction|audit|entretien/, "M5 6c0-1.7 3.1-3 7-3s7 1.3 7 3-3.1 3-7 3-7-1.3-7-3zM5 6v12c0 1.7 3.1 3 7 3s7-1.3 7-3V6M5 12c0 1.7 3.1 3 7 3s7-1.3 7-3"],
     [/metier|intitule|code|variante|parcours|cv|profil|formation|action/, "M8 7a4 4 0 1 0 8 0 4 4 0 0 0-8 0zM4 21c0-4 4-6 8-6s8 2 8 6"]
   ];
 
