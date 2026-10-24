@@ -561,6 +561,47 @@
     dessiner();
   }
 
+  /* Le marché caché : la base Sirene des entreprises du département,
+   * croisée avec les offres relevées. Tout est calculé par generer_site.py ;
+   * les noms affichés sont ceux de sociétés, jamais de personnes. */
+  function poserMarcheCache(el) {
+    var M = D.marche_cache;
+    if (!M) {
+      el.innerHTML = "<p class='vide-message'>La base des entreprises n'a pas encore été collectée.</p>";
+      return;
+    }
+    var maxSecteur = Math.max.apply(null, M.par_secteur.map(function (l) { return l[1]; }).concat([1]));
+    el.innerHTML =
+      "<div class='kpis'>" +
+        "<div class='kpi'><div class='valeur'>" + M.total.toLocaleString("fr-FR") + "</div><div class='etiquette'>entreprises de 3 salariés et plus, siège dans le Puy-de-Dôme</div></div>" +
+        "<div class='kpi'><div class='valeur'>" + M.publient + "</div><div class='etiquette'>ont publié au moins une de mes offres suivies</div></div>" +
+        "<div class='kpi creux'><div class='valeur'>" + String(M.silencieuses_pct).replace(".", ",") + " %</div><div class='etiquette'>sont silencieuses : le marché caché</div></div>" +
+      "</div>" +
+      "<h3 class='titre-zone'>Les silencieuses, par secteur</h3>" +
+      M.par_secteur.map(function (l) {
+        return "<div class='barre-ligne large'><span class='lieu'>" + echapper(l[0]) + "</span>" +
+          "<span class='barre-piste'><span class='barre-remplie' data-largeur='" + Math.round(l[1] * 100 / maxSecteur) + "'></span></span>" +
+          "<span class='n'>" + l[1] + "</span></div>";
+      }).join("") +
+      "<p class='note-graphe'>Par taille : " + M.par_taille.map(function (t) {
+        return t[1].toLocaleString("fr-FR") + " de " + t[0] + " salariés";
+      }).join(" · ") + ".</p>" +
+      "<h3 class='titre-zone'>Ma liste de candidatures spontanées · " + M.candidates_total + " entreprises</h3>" +
+      "<p class='note-graphe'>Silencieuses, 20 salariés et plus, dans les secteurs où un poste marketing est le plus courant. Les " +
+        M.candidates.length + " plus grandes :</p>" +
+      "<table class='tableau-candidates'><thead><tr><th>Entreprise</th><th>Secteur</th><th>Salariés</th><th>Commune</th></tr></thead><tbody>" +
+      M.candidates.map(function (c) {
+        return "<tr><td>" + echapper(c.nom) + "</td><td>" + echapper(c.secteur) + "</td><td>" + echapper(c.effectif) +
+          "</td><td>" + echapper(c.commune) + "</td></tr>";
+      }).join("") + "</tbody></table>" +
+      (M.publient ? "<p class='note-graphe'>Celles qui publient : " + M.noms_qui_publient.map(echapper).join(", ") + ".</p>" : "") +
+      "<p class='note-graphe'>Source : " + echapper(M.canal) + ", collecte du " + formaterDate(M.date) +
+        " ; entreprises actives, 3 salariés et plus, siège dans le département, entrepreneurs individuels exclus.</p>";
+    Array.prototype.forEach.call(el.querySelectorAll(".barre-remplie[data-largeur]"), function (b) {
+      b.style.width = b.dataset.largeur + "%";
+    });
+  }
+
   function poserKpis(el) {
     var st = D.stats, parDep = D.par_departement, miens = D.mes_departements;
     var codes = Object.keys(miens);
@@ -1564,6 +1605,7 @@
     "vedette": poserVedette,
     "sommaire-page": poserSommairePage,
     "mes-offres": poserMesOffres,
+    "marche-cache": poserMarcheCache,
     "a-retenir": poserARetenir,
     "mots-metier": poserMotsMetier,
     "salaires": poserSalaires,

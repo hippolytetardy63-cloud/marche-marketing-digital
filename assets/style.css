@@ -763,6 +763,9 @@ td code, .contenu code { font-size: .85em; background: var(--accent-doux); color
 .panneau.source-externe h3 { margin: 0 0 8px; font-size: .92rem; color: var(--accent); }
 .panneau.source-externe li { margin-bottom: 8px; }
 
+.tableau-candidates td { font-size: .84rem; }
+.tableau-candidates td:first-child { font-weight: 600; }
+
 /* ================= mes offres ================= */
 
 .bouton-enregistrer {
