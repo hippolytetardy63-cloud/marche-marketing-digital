@@ -1100,6 +1100,38 @@
     });
   }
 
+  /* Les outils demandes (au-dessus du seuil) face au M2 : le cours qui les
+     couvre, d'apres data/formation.json, ou rien. Les lignes que la
+     formation ne couvre pas sont surlignees : c'est ce qu'il faut aller
+     chercher hors des cours. */
+  function poserOutilsFormation(el) {
+    var O = D.outils;
+    var liste = (O && O.demandes || []).filter(function (o) { return o.pct >= O.seuil_manquant; });
+    if (!liste.length) {
+      el.innerHTML = "<p class='vide-message'>Aucun outil au-dessus du seuil pour l'instant.</p>";
+      return;
+    }
+    var hors = O.hors_formation.map(function (o) { return o.nom; });
+    el.innerHTML =
+      "<p class='chiffre-formation'>" + (hors.length
+        ? "<strong>" + hors.length + " outil" + (hors.length > 1 ? "s" : "") +
+          " demandé" + (hors.length > 1 ? "s" : "") + " qu'aucun cours ne couvre :</strong> " +
+          echapper(hors.join(", ")) + "."
+        : "<strong>Chaque outil demandé est couvert par un cours.</strong>") + "</p>" +
+      "<table class='tableau-formation'><thead><tr><th>Outil</th><th>Offres</th>" +
+        "<th>Moi</th><th>Cours du M2</th></tr></thead><tbody>" +
+      liste.map(function (o) {
+        return "<tr" + (o.formation ? "" : " class='hors-formation'") + ">" +
+          "<td>" + echapper(o.nom) + "</td><td>" + o.pct + " %</td>" +
+          "<td>" + (o.acquis ? "maîtrisé" : "<span class='a-acquerir'>à acquérir</span>") + "</td>" +
+          "<td>" + (o.formation ? echapper(o.formation) : "<strong>aucun cours</strong>") + "</td></tr>";
+      }).join("") +
+      "</tbody></table>" +
+      "<p class='note-graphe'>Outils cités dans au moins " + O.seuil_manquant +
+        " % des offres. La maquette ne nomme aucun logiciel : chaque rattachement est fait " +
+        echapper(O.formation_fondement) + " du cours. Source : " + echapper(O.formation_source) + ".</p>";
+  }
+
   /* Bouton de mise a jour. Il n'apparait que si le site est servi par
      scripts/outils/serveur_local.py : une page ouverte en double-clic, ou servie
      par un serveur de fichiers ordinaire, n'a aucun moyen de lancer un
@@ -1617,6 +1649,7 @@
     "outils-demandes": poserOutilsDemandes,
     "outils-manquants": poserOutilsManquants,
     "outils-acquis": poserOutilsAcquis,
+    "outils-formation": poserOutilsFormation,
     "pied": poserPied
   };
 

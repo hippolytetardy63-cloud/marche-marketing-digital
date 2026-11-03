@@ -766,6 +766,15 @@ td code, .contenu code { font-size: .85em; background: var(--accent-doux); color
 .tableau-candidates td { font-size: .84rem; }
 .tableau-candidates td:first-child { font-weight: 600; }
 
+/* Les outils face au M2 : les lignes qu'aucun cours ne couvre, en ambre. */
+.chiffre-formation { margin: 0 0 6px; }
+.tableau-formation td { font-variant-numeric: tabular-nums; }
+.tableau-formation td:first-child { font-weight: 600; }
+.tableau-formation .a-acquerir { color: var(--alerte); }
+.tableau-formation tr.hors-formation td { background: var(--alerte-doux); }
+.tableau-formation tr.hors-formation td:first-child,
+.tableau-formation tr.hors-formation td:last-child { color: var(--alerte); }
+
 /* ================= mes offres ================= */
 
 .bouton-enregistrer {
