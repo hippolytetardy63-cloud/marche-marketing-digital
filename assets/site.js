@@ -1597,7 +1597,8 @@
       var valeur = el.dataset.valeur.split(".").reduce(function (objet, cle) {
         return objet == null ? undefined : objet[cle];
       }, D);
-      if (valeur !== undefined) el.textContent = valeur;
+      // Nombres à la française : 2 729, 99,9.
+      if (valeur !== undefined) el.textContent = typeof valeur === "number" ? valeur.toLocaleString("fr-FR") : valeur;
     });
   }
 
