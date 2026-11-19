@@ -240,20 +240,24 @@ Cette règle porte sur la **forme du rendu**, pas sur le contenu : le travail d'
 │   ├── brut/                    ← ce que la collecte récupère, jamais modifié
 │   │   ├── offres_<ROME>_<date>.json       ← réponse de l'API, telle quelle
 │   │   ├── offres_<ROME>_<date>.meta.json  ← requête, date, canal, total
+│   │   ├── rss_<flux>_<date>.xml (+ .meta.json) ← flux RSS tel quel (veille, depuis le 19/11)
 │   │   └── entreprises_63_<date>.json      ← base Sirene du Puy-de-Dôme (une fois par mois)
 │   ├── traite/                  ← ce que la mise en forme en tire
 │   │   ├── offres_<ROME>_<date>.csv        ← une ligne par offre, jamais écrasé
 │   │   ├── entreprises_63_<date>.csv       ← une ligne par entreprise
+│   │   ├── rss_<flux>_<date>.csv           ← une ligne par offre du flux
 │   │   └── serie.json           ← GÉNÉRÉ — un point par relevé, pour la courbe
 │   ├── profil.json              ← mes outils maîtrisés, saisis à la main
 │   ├── metiers.json             ← codes ROME suivis : M1718 principal, M1703 et E1112 voisins
-│   └── formation.json           ← cours du M2 et outils qu'ils couvrent, d'après l'intitulé
+│   ├── formation.json           ← cours du M2 et outils qu'ils couvrent, d'après l'intitulé
+│   └── flux_rss.json            ← flux RSS suivis (Remotive, Marketing), avec leurs conditions
 │
 ├── scripts/
 │   ├── collecte/                ← récupérer les données (écrit dans data/brut/ seulement)
 │   │   ├── test_connexion.py    ← vérifie que les identifiants répondent
 │   │   ├── extraction_offres.py ← API France Travail → data/brut/
-│   │   └── extraction_entreprises.py ← API Recherche d'entreprises → data/brut/
+│   │   ├── extraction_entreprises.py ← API Recherche d'entreprises → data/brut/
+│   │   └── extraction_flux_rss.py ← flux RSS de data/flux_rss.json → data/brut/
 │   ├── traitement/              ← mettre en forme, produire le site
 │   │   ├── mise_en_forme.py     ← data/brut/ → data/traite/
 │   │   ├── calculs.py           ← les petites formules (salaires, marge d'erreur, tri des offres hors sujet…), testées

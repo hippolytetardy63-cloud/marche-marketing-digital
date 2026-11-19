@@ -181,13 +181,15 @@
         <p>L'API « Offres d'emploi v2 » de France Travail est officielle, gratuite, documentée et légale. Chaque offre revient avec son intitulé, son contrat, son salaire affiché, ses compétences, son lieu et sa date.</p>
         <p>Trois métiers sont relevés à chaque passage : le chargé de marketing digital (<code>M1718</code>), métier principal de tout le tableau de bord, et deux voisins, chef de produit (<code>M1703</code>) et chargé de communication (<code>E1112</code>), suivis depuis le 21 octobre 2026. Les codes sont écrits à un seul endroit, <code>data/metiers.json</code>. Les voisins ne se mêlent à aucun chiffre du métier principal : ils n'apparaissent que dans la partie qui leur est consacrée, page <a href="marche.html">Le marché</a>.</p>
         <p>Deux limites structurent la collecte : <strong>150 offres au maximum par appel</strong>, et <strong>1 150 par requête</strong>. Le nombre total réel se lit dans l'en-tête <code>Content-Range</code> de la réponse — c'est ce chiffre qui est affiché, même si le plafond de téléchargement était atteint. Il ne l'est pas ici.</p>
+        <p><strong>Un second canal, en veille : un flux RSS.</strong> Un flux RSS est un fichier que le site publie lui-même pour annoncer ses nouvelles offres, fait pour être lu par des programmes : le lire n'est pas de l'aspiration de pages. Depuis le 19 novembre 2026, le relevé lit aussi le flux de Remotive, catégorie Marketing. C'est le seul flux d'offres trouvé qui existe et que son site autorise ; les sites d'emploi français consultés n'en proposent pas, ou plus. Le flux est enregistré tel quel dans <code>data/brut/</code>, avec sa fiche (adresse, date, canal), mis en tableau comme le reste, et listé page <a href="marche.html">Le marché</a>, chaque offre avec son lien et la mention de sa source, comme Remotive le demande. Les flux suivis sont écrits à un seul endroit, <code>data/flux_rss.json</code>, avec leurs conditions.</p>
+        <p>Sa limite est forte : un flux ne donne que les dernières offres publiées, sans total du marché, sans salaire ni département, et celui-ci ne propose que quelques offres en télétravail, en anglais. Il sert donc à la veille, jamais à compter : ses offres ne se mêlent à aucun chiffre du site. Un flux en panne n'arrête pas le relevé des offres de France Travail.</p>
       </div>
     </section>
     <section class="panneau">
       <h2>Ce que je n'automatise pas</h2>
       <div class="contenu">
         <p>LinkedIn, l'APEC et Indeed interdisent l'extraction automatique dans leurs conditions d'utilisation. Je les consulte à la main ; je ne les aspire pas.</p>
-        <p>Les canaux qui pourront être ajoutés sont ceux qui l'autorisent : Adzuna, La Bonne Alternance, Arbeitnow, Jooble, Remotive, et les flux RSS quand ils existent — un flux RSS étant le canal le plus stable qui soit.</p>
+        <p>Les canaux qui pourront être ajoutés sont ceux qui l'autorisent : Adzuna, La Bonne Alternance, Arbeitnow, Jooble, et d'autres flux RSS quand ils existent. Celui de Remotive est déjà relevé (voir « Le canal »).</p>
       </div>
     </section>
   </div>
@@ -335,7 +337,7 @@
 </main>
 
 <script src="assets/carte_france.js"></script>
-<script src="assets/donnees.js?v=9fb56c42"></script>
-<script src="assets/site.js?v=a6a4b1e1"></script>
+<script src="assets/donnees.js?v=34ec2fe6"></script>
+<script src="assets/site.js?v=99629005"></script>
 </body>
 </html>

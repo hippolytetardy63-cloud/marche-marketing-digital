@@ -867,6 +867,34 @@
     el.innerHTML = "<ul>" + points.map(function (p) { return "<li>" + p + "</li>"; }).join("") + "</ul>";
   }
 
+  /* La veille sur d'autres canaux : les flux RSS de data/flux_rss.json, a
+   * leur dernier releve. Bloc a part : rien ici ne se mele aux chiffres de
+   * France Travail. Chaque offre renvoie a sa source et la cite, comme le
+   * demandent les conditions du flux. */
+  function poserVeilleRss(el) {
+    var V = D.veille_rss;
+    if (!V || !V.length) {
+      el.innerHTML = "<p class='vide-message'>Aucun flux RSS relevé pour l'instant.</p>";
+      return;
+    }
+    function pluriel(n, mot) { return n + " " + mot + (n > 1 ? "s" : ""); }
+    el.innerHTML = V.map(function (f) {
+      var tete = "<p class='chapo'>" + echapper(f.canal) + " : " + pluriel(f.nombre, "offre") +
+        " dans le flux au relevé du " + formaterDate(f.date) + ", " + pluriel(f.offres_vues, "offre") +
+        " distincte" + (f.offres_vues > 1 ? "s" : "") + " vue" + (f.offres_vues > 1 ? "s" : "") +
+        " depuis le " + formaterDate(f.premier_releve) + ".</p>";
+      var liste = f.offres.length ? f.offres.map(function (o) {
+        var titre = o.lien ? "<a href='" + echapper(o.lien) + "' target='_blank' rel='noopener'>" +
+          echapper(o.titre) + "</a>" : echapper(o.titre);
+        var infos = [o.entreprise, o.lieu, o.contrat, o.date ? "publiée le " + formaterDate(o.date) : ""]
+          .filter(Boolean).map(echapper).join(" · ");
+        return "<div class='offre'><h3>" + titre + "</h3><p class='infos'>" + infos + "</p>" +
+          "<div class='etiquettes'><span class='etiq gris'>Source : " + echapper(f.source) + "</span></div></div>";
+      }).join("") : "<p class='vide-message'>Le flux ne contenait aucune offre ce jour-là.</p>";
+      return tete + liste + "<p class='note-graphe'>" + echapper(f.conditions) + "</p>";
+    }).join("");
+  }
+
   /* Les offres ecartees comme hors sujet au dernier releve (regle dans
    * calculs.py), chacune avec son lien : le tri doit pouvoir se verifier. */
   function poserOffresEcartees(el) {
@@ -1655,6 +1683,7 @@
     "barres-contrats": poserBarresContrats,
     "reserves": poserReserves,
     "offres-ecartees": poserOffresEcartees,
+    "veille-rss": poserVeilleRss,
     "offres": poserOffres,
     "dernieres-offres": poserDernieresOffres,
     "horodatage": poserHorodatage,
