@@ -633,7 +633,9 @@
       ["Canal", m.canal],
       ["Requête", "codeROME=" + m.code_rome + ", " + m.perimetre + ", sans autre filtre"],
       ["Date", formaterDate(m.date)],
-      ["Total", D.stats.total + " offres, lues dans l'en-tête Content-Range"],
+      ["Total", m.total_marche + " offres, lues dans l'en-tête Content-Range"],
+      ["Après tri", D.stats.total + " offres dans le sujet, " + D.tri.ecartees +
+        " écartée" + (D.tri.ecartees > 1 ? "s" : "") + " comme hors sujet (liste page Méthode)"],
       ["Limites", m.limite_par_appel + " par appel, " + m.limite_par_requete + " par requête"],
       ["Fichier", m.fichier]
     ];
@@ -843,6 +845,12 @@
       "<strong>Le champ « compétences » n'est rempli que dans " + st.avec_competences_pct +
         " % des cas.</strong> Pour compter les outils demandés, il faudra lire le texte des annonces."
     ];
+    if (D.tri && D.tri.ecartees) {
+      points.push("<strong>Le code métier est choisi par le recruteur.</strong> " + D.tri.ecartees + " offre" +
+        (D.tri.ecartees > 1 ? "s" : "") + " sur " + D.tri.avant_tri + " rangée" + (D.tri.ecartees > 1 ? "s" : "") +
+        " sous ce code n'ont aucun mot du marketing dans leur titre : elles sont écartées de tous les chiffres, " +
+        "et listées page <a href='methode.html#tri'>Méthode</a>.");
+    }
     if (st.premier_employeur_pct >= 10) {
       points.push("<strong>Un seul employeur, " + echapper(st.premier_employeur) + ", publie " +
         st.offres_premier_employeur + " offres</strong> — " + st.premier_employeur_pct +
@@ -857,6 +865,23 @@
     });
     el.classList.add("reserve");
     el.innerHTML = "<ul>" + points.map(function (p) { return "<li>" + p + "</li>"; }).join("") + "</ul>";
+  }
+
+  /* Les offres ecartees comme hors sujet au dernier releve (regle dans
+   * calculs.py), chacune avec son lien : le tri doit pouvoir se verifier. */
+  function poserOffresEcartees(el) {
+    var T = D.tri;
+    if (!T || !T.liste.length) {
+      el.innerHTML = "<p class='vide-message'>Aucune offre écartée au dernier relevé.</p>";
+      return;
+    }
+    el.innerHTML = "<table><thead><tr><th>Titre de l'offre</th><th>Employeur</th><th>Contrat</th></tr></thead><tbody>" +
+      T.liste.map(function (o) {
+        var titre = o.url ? "<a href='" + echapper(o.url) + "' target='_blank' rel='noopener'>" +
+          echapper(o.intitule) + "</a>" : echapper(o.intitule);
+        return "<tr><td>" + titre + "</td><td>" + (o.entreprise ? echapper(o.entreprise) : "non précisé") +
+          "</td><td>" + echapper(o.contrat) + "</td></tr>";
+      }).join("") + "</tbody></table>";
   }
 
   /* Les mots-cles de l'offre face a mon CV, comme les compare un logiciel
@@ -1629,6 +1654,7 @@
     "barres-departements": poserBarresDepartements,
     "barres-contrats": poserBarresContrats,
     "reserves": poserReserves,
+    "offres-ecartees": poserOffresEcartees,
     "offres": poserOffres,
     "dernieres-offres": poserDernieresOffres,
     "horodatage": poserHorodatage,

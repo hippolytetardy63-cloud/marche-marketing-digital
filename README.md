@@ -256,7 +256,7 @@ Cette règle porte sur la **forme du rendu**, pas sur le contenu : le travail d'
 │   │   └── extraction_entreprises.py ← API Recherche d'entreprises → data/brut/
 │   ├── traitement/              ← mettre en forme, produire le site
 │   │   ├── mise_en_forme.py     ← data/brut/ → data/traite/
-│   │   ├── calculs.py           ← les petites formules (salaires, marge d'erreur…), testées
+│   │   ├── calculs.py           ← les petites formules (salaires, marge d'erreur, tri des offres hors sujet…), testées
 │   │   ├── generer_site.py      ← data/traite/ → assets/donnees.js
 │   │   ├── generer_carte.py     ← GeoJSON → carte (lancé une seule fois)
 │   │   ├── apercu_cv.py         ← CV PDF → image (quand le CV change)
