@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1000" preserveAspectRatio="xMidYMid slice">
+  <!-- La chaine des Puys au lever du jour, dessinee pour ce site (aucune photo, aucun droit tiers). -->
+  <defs>
+    <linearGradient id="ciel" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#5D8FE8"/><stop offset=".42" stop-color="#9DBDF2"/><stop offset=".64" stop-color="#F1C6B6"/><stop offset=".8" stop-color="#FBE0C4"/></linearGradient>
+    <radialGradient id="soleil"><stop offset="0" stop-color="#FFF6E3"/><stop offset=".35" stop-color="#FFE7C2" stop-opacity=".9"/><stop offset="1" stop-color="#FFD9B0" stop-opacity="0"/></radialGradient>
+    <linearGradient id="plaine" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#4A63A8"/><stop offset="1" stop-color="#2C4C96"/></linearGradient>
+  </defs>
+  <rect width="1600" height="1000" fill="url(#ciel)"/>
+  <circle cx="1250" cy="560" r="300" fill="url(#soleil)"/>
+  <circle cx="1250" cy="560" r="56" fill="#FFF4DE"/>
+  <g fill="#A3B6E3" opacity=".9"><path d="M-30 700 C52 700 102 592 120 592 C138 592 188 700 270 700 Z"/><path d="M190 700 C267 700 293 604 310 604 Q330 620 350 604 C367 604 393 700 470 700 Z"/><path d="M670 700 C752 700 802 590 820 590 C838 590 888 700 970 700 Z"/><path d="M840 700 C934 700 960 566 980 566 Q1010 590 1040 566 C1060 566 1086 700 1180 700 Z"/><path d="M1250 700 C1344 700 1400 588 1420 588 C1440 588 1496 700 1590 700 Z"/><path d="M1460 700 C1526 700 1566 612 1580 612 C1594 612 1634 700 1700 700 Z"/><rect y="680" width="1600" height="120"/></g>
+  <g fill="#7089CC"><path d="M260 720 C395 690 434 405 560 405 C686 405 725 690 860 720 Z"/><path d="M650 720 C727 720 773 560 790 560 C807 560 853 720 930 720 Z"/><path d="M1000 720 C1104 720 1127 556 1150 556 Q1190 576 1230 556 C1253 556 1276 720 1380 720 Z"/><path d="M-80 720 C8 720 61 640 80 640 C99 640 152 720 240 720 Z"/><rect y="700" width="1600" height="120"/>
+    <rect x="557" y="340" width="6" height="68"/><rect x="552" y="372" width="16" height="5"/></g>
+  <path d="M0 760 C180 728 330 770 520 752 C700 735 860 778 1040 760 C1220 742 1400 772 1600 752 L1600 1000 L0 1000 Z" fill="url(#plaine)"/>
+  <g fill="#1F3672" opacity=".92">
+    <path d="M0 905 L60 905 L60 885 L95 868 L130 885 L130 895 L190 895 L190 878 L230 878 L230 900 L330 900 L330 882 L370 866 L410 882 L410 898 L520 898 L520 888 L600 888 L600 905 L760 905 L760 892 L840 892 L840 906 L980 906 L980 890 L1060 890 L1060 900 L1180 900 L1180 860 L1200 860 L1200 790 L1212 740 L1224 790 L1224 860 L1250 860 L1250 790 L1262 740 L1274 790 L1274 860 L1290 860 L1290 842 L1400 842 L1420 856 L1420 900 L1500 900 L1500 884 L1560 884 L1560 900 L1600 900 L1600 1000 L0 1000 Z"/>
+  </g>
+</svg>

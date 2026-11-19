@@ -233,6 +233,7 @@ Cette règle porte sur la **forme du rendu**, pas sur le contenu : le travail d'
 │   ├── cv-hippolyte-tardy.pdf   ← CV sans coordonnées
 │   ├── cv-apercu.jpg            ← GÉNÉRÉ depuis le PDF
 │   ├── favicon.svg
+│   ├── fond-puys.svg            ← fond de page : la chaîne des Puys, dessinée pour le site
 │   └── apercu-partage.png       ← image montrée quand on partage le lien
 │
 ├── data/

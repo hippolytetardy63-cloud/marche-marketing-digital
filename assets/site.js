@@ -100,11 +100,12 @@
   var SOLEIL = "M12 4V2M12 22v-2M4 12H2M22 12h-2M5.6 5.6 4.2 4.2M19.8 19.8l-1.4-1.4M5.6 18.4l-1.4 1.4M19.8 4.2l-1.4 1.4M12 16a4 4 0 1 0 0-8 4 4 0 0 0 0 8z";
   var LUNE = "M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z";
 
-  function themeClair() { return document.documentElement.dataset.theme === "light"; }
+  // Clair par defaut (habillage « Verre ») ; le sombre se choisit au bouton.
+  function themeClair() { return document.documentElement.dataset.theme !== "dark"; }
 
   function appliquerTheme(clair) {
-    if (clair) document.documentElement.dataset.theme = "light";
-    else delete document.documentElement.dataset.theme;
+    if (clair) delete document.documentElement.dataset.theme;
+    else document.documentElement.dataset.theme = "dark";
     try { localStorage.setItem("theme", clair ? "clair" : "sombre"); } catch (e) { /* rien */ }
     Array.prototype.forEach.call(document.querySelectorAll(".bouton-theme"), dessinerBoutonTheme);
   }
@@ -124,7 +125,7 @@
     return b;
   }
 
-  try { if (localStorage.getItem("theme") === "clair") document.documentElement.dataset.theme = "light"; } catch (e) { /* rien */ }
+  try { if (localStorage.getItem("theme") === "sombre") document.documentElement.dataset.theme = "dark"; } catch (e) { /* rien */ }
 
   /* ===== Icône de chaque titre de section, choisie d'après son texte ===== */
   var ICONES_SECTION = [
@@ -1463,7 +1464,7 @@
    * validee par le calcul. */
   /* La jauge des salaires : la moitié centrale du marché (du quart bas au
    * quart haut), sa médiane, et mes repères posés dessus. Une seule bande
-   * turquoise, des repères ambre étiquetés en toutes lettres : le tableau
+   * bleue, des repères ambre étiquetés en toutes lettres : le tableau
    * qui suit reprend les mêmes valeurs. */
   function jaugeSalaires(S) {
     var reperes = S.reperes.filter(function (r) { return r.nom !== "Médiane de ma promo IAE"; });

@@ -1,61 +1,93 @@
 /* Feuille de style commune aux pages du tableau de bord.
    Une seule couleur a changer ici la change partout. */
 
-/* Habillage « Nuit » (22/10/2026) : sombre par defaut, turquoise et ambre.
-   Palette validee par le calcul avant adoption (distance de couleur
-   CIEDE2000, y compris sous protanopie, deuteranopie et tritanopie) :
-   - turquoise / ambre (outils acquis / a aller chercher, contour de mes
-     zones sur la carte) : 25,8 au pire, pour un seuil de 10 ;
-   - cinq teintes de la carte, deux a deux voisines : 8,4 au pire, seuil 8 ;
-   - textes : contraste de 7,0:1 a 16,1:1, seuil WCAG AA de 4,5:1.
-   Changer une couleur ici = refaire ce calcul. */
+/* Habillage « Verre » (19/11/2026), repris du Dashboard Organisation : un
+   paysage de la chaine des Puys en fond (assets/fond-puys.svg, dessine pour
+   le site), les panneaux en verre depoli par-dessus, bleu et ambre.
+   Clair « Jour » par defaut, sombre « Nuit » au bouton soleil / lune.
+
+   Palette validee par le calcul avant adoption, dans les deux themes
+   (distance de couleur CIEDE2000 en vision normale et sous protanopie,
+   deuteranopie et tritanopie ; contraste WCAG mesure sur le verre pose sur
+   la partie la plus defavorable du paysage) :
+   - bleu / ambre (outils acquis / a aller chercher, contour de mes zones) :
+     48,8 au pire en clair, 46,9 en sombre, pour un seuil de 10 ;
+   - carte, teinte « aucune offre » et cinq teintes, deux a deux voisines :
+     8,6 au pire en clair, 9,8 en sombre, seuil 8 ;
+   - textes : de 5,0:1 a 17,3:1 en clair, de 6,3:1 a 16,8:1 en sombre,
+     seuil WCAG AA de 4,5:1. Le verre des panneaux est opaque a 90 % (clair)
+     et 82 % (sombre), celui du menu a 85 % et 70 % : en dessous, un texte
+     pose au-dessus de la ville, en bas du paysage, devient trop pale.
+   Changer une couleur ou une opacite ici = refaire ce calcul. */
 
 :root {
-  color-scheme: dark;
-  --fond: #0b0f19;
-  --surface: #111827;
-  --barre-fond: #0d1220;
-  --bord: #1f2937;
-  --texte: #f3f4f6;
-  --texte-doux: #9ca3af;
-  --accent: #2dd4bf;
-  --accent-doux: #0e2a2a;
-  --alerte: #fbbf24;
-  --alerte-doux: #2a2110;
-  --barre: #2dd4bf;
-  --carte-vide: #1a2232;
-  --carte-trait: #0b0f19;
-  --c1: #134e4a; --c2: #0f766e; --c3: #0fa594; --c4: #3fdcc6; --c5: #b8faef;
-  --ombre: none;
+  color-scheme: light;
+  --fond: #eef2f9;
+  --surface: #ffffff;
+  --bord: rgba(14, 26, 51, .12);
+  --texte: #0e1a33;
+  --texte-doux: #3b4b66;
+  --accent: #1b58c9;
+  --accent-doux: #e2ebfb;
+  --alerte: #a34a06;
+  --alerte-doux: #fef3c7;
+  --barre: #1f5dd0;
+  --carte-vide: #edf1f7;
+  --carte-trait: #ffffff;
+  --c1: #cfddf7; --c2: #93b3ee; --c3: #5585e0; --c4: #2a57b5; --c5: #13306f;
+  /* le verre et le paysage */
+  --fond-page: #5d8fe8;
+  --voile-fond: rgba(15, 35, 90, .08);
+  --verre: rgba(255, 255, 255, .90);
+  --barre-fond: rgba(255, 255, 255, .85);
+  --bord-verre: rgba(255, 255, 255, .72);
+  --flou: blur(24px) saturate(150%);
+  --survol: rgba(14, 26, 51, .06);
+  --ombre: inset 0 1px 0 rgba(255, 255, 255, .7), 0 12px 38px rgba(15, 35, 90, .18);
+  --rayon: 24px;
+  --rayon-carte: 16px;
 }
 
-/* Version claire « Jour », choisie par le bouton soleil / lune et retenue
-   par le navigateur. Validee par le calcul comme la version sombre :
-   turquoise / ambre a 23,3 au pire sous daltonisme, carte a 9,8 au pire
-   entre teintes voisines, textes de 5,0:1 a 17,9:1. */
-:root[data-theme="light"] {
-  color-scheme: light;
-  --fond: #f8fafc; --surface: #ffffff; --barre-fond: #ffffff; --bord: #e2e8f0;
-  --texte: #0f172a; --texte-doux: #475569;
-  --accent: #0f766e; --accent-doux: #e6f6f4;
-  --alerte: #b45309; --alerte-doux: #fef3c7;
-  --barre: #0d9488;
-  --carte-vide: #edf2f7; --carte-trait: #ffffff;
-  --c1: #7fd8c9; --c2: #36ae9f; --c3: #0f8174; --c4: #0a5650; --c5: #052b28;
-  --ombre: 0 1px 2px rgba(15, 23, 42, .06);
+/* Version sombre « Nuit » : le meme paysage sous un voile, le verre bleu nuit. */
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --fond: #0b1222; --surface: #111b31; --bord: rgba(255, 255, 255, .10);
+  --texte: #eef3ff; --texte-doux: #aebbd4;
+  --accent: #7ab0ff; --accent-doux: #172a4d;
+  --alerte: #fbbf24; --alerte-doux: #2a2110;
+  --barre: #6ea8ff;
+  --carte-vide: #2e323b; --carte-trait: #0b1222;
+  --c1: #163468; --c2: #1f4f9c; --c3: #3d7ee0; --c4: #85b3ff; --c5: #d3e4ff;
+  --fond-page: #0b1222;
+  --voile-fond: rgba(4, 10, 26, .58);
+  --verre: rgba(14, 22, 42, .82);
+  --barre-fond: rgba(14, 22, 42, .70);
+  --bord-verre: rgba(255, 255, 255, .12);
+  --survol: rgba(255, 255, 255, .07);
+  --ombre: inset 0 1px 0 rgba(255, 255, 255, .08), 0 14px 44px rgba(0, 0, 0, .42);
 }
 
 * { box-sizing: border-box; }
+
+html { background: var(--fond-page); }
 
 body {
   margin: 0;
   display: flex;
   min-height: 100vh;
-  background: var(--fond);
   color: var(--texte);
-  font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", ui-sans-serif, system-ui, "Segoe UI", Roboto, sans-serif;
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
+}
+
+/* Le paysage, fixe derriere tout le contenu, sous un voile qui le fonce en
+   theme sombre. Un calque fixe plutot que « background-attachment: fixed »,
+   que les iPhone ignorent. */
+body::before {
+  content: ""; position: fixed; inset: 0; z-index: -1; pointer-events: none;
+  background: linear-gradient(var(--voile-fond), var(--voile-fond)),
+              url("fond-puys.svg") center bottom / cover no-repeat var(--fond-page);
 }
 
 /* ================= menu lateral ================= */
@@ -821,39 +853,97 @@ td code, .contenu code { font-size: .85em; background: var(--accent-doux); color
 .ats-manque { color: var(--alerte); border-color: var(--alerte); }
 .ats-sep { margin-left: 4px; }
 
-/* ================= habillage « Nuit » ================= */
-/* Les formes modernisees : coins plus ronds, pastilles, chiffres plus
-   presents. Les couleurs, elles, viennent toutes des variables du haut. */
+/* ================= habillage « Verre » ================= */
+/* Les formes du Dashboard Organisation : verre depoli, coins ronds, menu
+   flottant, grands chiffres en police arrondie. Les couleurs, elles,
+   viennent toutes des variables du haut. */
 
-::selection { background: var(--accent); color: var(--fond); }
+::selection { background: var(--accent); color: var(--surface); }
 .entete-page h1 { font-weight: 700; letter-spacing: -.025em; }
 .entete-page .fil { color: var(--accent); }
 
-.barre-laterale { border-right-color: var(--bord); }
+/* Le verre : tout ce qui flotte sur le paysage. */
+.panneau, .kpi, .sommaire a, .entete-page, .barre-laterale, .sommaire-page,
+.barre-mobile, .onglets-bas {
+  -webkit-backdrop-filter: var(--flou); backdrop-filter: var(--flou);
+}
+.panneau, .kpi, .sommaire a, .entete-page {
+  background: var(--verre); border: 1px solid var(--bord-verre);
+  box-shadow: var(--ombre);
+}
+.panneau, .kpi, .entete-page { border-radius: var(--rayon); }
+.sommaire a { border-radius: var(--rayon-carte); }
+
+/* L'en-tete de chaque page devient un panneau : son titre reste lisible
+   quelle que soit la partie du paysage qu'il recouvre. */
+.entete-page { padding: 22px 24px; margin-bottom: 18px; }
+
+/* Le menu flotte, detache des bords. */
+.barre-laterale {
+  background: var(--barre-fond); border: 1px solid var(--bord-verre);
+  box-shadow: var(--ombre);
+  margin: 16px 0 16px 16px; top: 16px; height: calc(100vh - 32px);
+  border-radius: 28px;
+}
+.marque { border-bottom-color: var(--bord); }
+.pied-barre { border-top-color: var(--bord); }
 .marque .titre { letter-spacing: -.01em; }
 .marque .rome { border-radius: 999px; padding: 2px 10px; }
-.navigation a { border-radius: 10px; }
-.navigation a:hover { background: var(--surface); }
-.navigation a[aria-current="page"] {
-  background: var(--accent-doux); color: var(--accent);
-  box-shadow: inset 3px 0 0 var(--accent);
+.navigation a { border-radius: 12px; }
+.navigation a:hover { background: var(--survol); color: var(--texte); }
+.navigation a[aria-current="page"] { background: var(--accent-doux); color: var(--accent); }
+
+/* Le sommaire de page : une pastille de verre qui reste en haut. */
+.sommaire-page {
+  margin: 0 0 18px; padding: 8px 10px; top: 10px;
+  background: var(--barre-fond); border: 1px solid var(--bord-verre);
+  border-radius: 999px; box-shadow: var(--ombre);
 }
 
 .horodatage { border-radius: 999px; padding: 6px 14px; }
-.bouton-maj { border-radius: 999px; color: var(--fond); padding: 8px 18px; }
+.bouton-maj { border-radius: 999px; color: var(--surface); padding: 8px 18px; }
+.bouton-cv, .plus, .filtres button, .recherche, .tri select { border-radius: 999px; }
 
-.kpi { border-radius: 16px; padding: 18px 20px; }
-.kpi .valeur { font-size: 2.2rem; font-weight: 700; letter-spacing: -.03em; font-variant-numeric: tabular-nums; }
+.kpi { padding: 18px 20px; }
+.kpi .valeur { font-size: 2.2rem; font-weight: 700; letter-spacing: -.03em; }
 .kpi.principal { border-color: var(--accent); }
 
-.panneau { border-radius: 16px; padding: 22px 24px; }
+/* Les grands chiffres en police arrondie, a chasse fixe. */
+.kpi .valeur, .tuile-vedette .valeur, .chiffre-cle strong, .jauge-valeur {
+  font-family: ui-rounded, "SF Pro Rounded", -apple-system, system-ui, sans-serif;
+  font-variant-numeric: tabular-nums;
+}
+
+.panneau { padding: 22px 24px; }
 .panneau > h2 { font-weight: 680; letter-spacing: -.01em; }
+.a-retenir { border-radius: var(--rayon); }
 
 .barre-piste { border-radius: 999px; }
 .barre-remplie { border-radius: 999px; }
 .etiq { border-radius: 999px; padding: 2px 10px; }
 
-.offre { border-radius: 14px; transition: border-color .15s; }
+.offre { border-radius: var(--rayon-carte); transition: border-color .15s; }
 .offre:hover { border-color: var(--accent); }
 
 .graphe .aire { opacity: .16; }
+
+/* Petit ecran : le menu glisse depuis la gauche, il flotte lui aussi. */
+@media (max-width: 900px) {
+  .barre-laterale {
+    margin: 0; top: 10px; left: 10px; bottom: 10px; height: auto;
+    border-radius: 24px; transform: translateX(calc(-100% - 20px));
+  }
+  .barre-mobile { background: var(--barre-fond); border-bottom: 1px solid var(--bord-verre); }
+  .onglets-bas { background: var(--barre-fond); border-top: 1px solid var(--bord-verre); }
+  .sommaire-page { top: 66px; margin: 0 0 16px; }
+  .entete-page { padding: 18px 18px; }
+}
+
+/* « Reduire la transparence » (reglage d'accessibilite du systeme) : le
+   verre devient opaque, sans flou. */
+@media (prefers-reduced-transparency: reduce) {
+  .panneau, .kpi, .sommaire a, .entete-page, .barre-laterale, .sommaire-page,
+  .barre-mobile, .onglets-bas {
+    background: var(--surface); -webkit-backdrop-filter: none; backdrop-filter: none;
+  }
+}
