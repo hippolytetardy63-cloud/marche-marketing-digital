@@ -276,7 +276,7 @@ Cette règle porte sur la **forme du rendu**, pas sur le contenu : le travail d'
 ├── automatisations/             ← leur mode d'emploi, et les anciennes tâches Claude
 └── contexte/                    ← support du cours : séance CM 1, maquette du M2
 
-Ignorés par git : rendu/ (zip du rendu), sauvegardes/ (copies locales), public/.
+Ignorés par git : rendu/ (zip du rendu), public/. Sur l'ordinateur de l'auteur, le projet vit dans un dossier « Dashboard » ; les notes personnelles et les sauvegardes locales sont rangées à côté, dans « pour moi », hors du dépôt.
 ```
 
 ### Ouvrir le site
