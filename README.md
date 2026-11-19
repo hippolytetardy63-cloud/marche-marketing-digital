@@ -212,53 +212,66 @@ Cette règle porte sur la **forme du rendu**, pas sur le contenu : le travail d'
 ├── requirements.txt             ← bibliothèques Python nécessaires
 ├── .env                         ← identifiants France Travail (jamais versionné)
 ├── .env.example                 ← modèle sans valeurs, lui versionné
-├── .gitignore
-│
-├── ouvrir-le-site.bat           ← double-clic : lance le site et son serveur
-├── ouvrir-le-site.command       ← la même chose sur Mac
+├── .gitignore  .gitattributes
+├── ouvrir-le-site.command       ← double-clic (Mac) : lance le site et son serveur
+├── ouvrir-le-site.bat           ← la même chose sous Windows
 │
 ├── index.html                   ← tableau de bord, page d'accueil
 ├── metier.html                  ← le métier, les codes ROME
 ├── marche.html                  ← géographie, contrats, salaires, offres, évolution
 ├── acteurs.html                 ← qui recrute, marché caché, professionnels
-├── profil.html                  ← mon CV et l'écart avec le marché
+├── profil.html                  ← mon CV, l'écart avec le marché et avec la formation
+├── mes-offres.html              ← offres enregistrées, statut et note (dans le navigateur seulement)
 ├── methode.html                 ← canaux, limites, chaîne technique, RGPD
+├── 404.html                     ← page d'adresse introuvable (GitHub Pages)
 │
 ├── assets/
-│   ├── style.css                ← feuille de style commune aux 6 pages
-│   ├── site.js                  ← menu latéral et tous les blocs affichés
+│   ├── style.css                ← feuille de style commune aux pages
+│   ├── site.js                  ← menu et tous les blocs affichés
 │   ├── donnees.js               ← GÉNÉRÉ — jamais modifié à la main
 │   ├── carte_france.js          ← GÉNÉRÉ une fois — fond de carte IGN
-│   ├── cv-hippolyte-tardy.pdf
-│   └── cv-apercu.jpg            ← GÉNÉRÉ depuis le PDF
+│   ├── cv-hippolyte-tardy.pdf   ← CV sans coordonnées
+│   ├── cv-apercu.jpg            ← GÉNÉRÉ depuis le PDF
+│   ├── favicon.svg
+│   └── apercu-partage.png       ← image montrée quand on partage le lien
 │
 ├── data/
 │   ├── brut/                    ← ce que la collecte récupère, jamais modifié
-│   │   ├── offres_M1718_<date>.json       ← réponse de l'API, telle quelle
-│   │   └── offres_M1718_<date>.meta.json  ← requête, date, canal, total
+│   │   ├── offres_<ROME>_<date>.json       ← réponse de l'API, telle quelle
+│   │   ├── offres_<ROME>_<date>.meta.json  ← requête, date, canal, total
+│   │   └── entreprises_63_<date>.json      ← base Sirene du Puy-de-Dôme (une fois par mois)
 │   ├── traite/                  ← ce que la mise en forme en tire
-│   │   ├── offres_M1718_<date>.csv        ← une ligne par offre, jamais écrasé
+│   │   ├── offres_<ROME>_<date>.csv        ← une ligne par offre, jamais écrasé
+│   │   ├── entreprises_63_<date>.csv       ← une ligne par entreprise
 │   │   └── serie.json           ← GÉNÉRÉ — un point par relevé, pour la courbe
 │   ├── profil.json              ← mes outils maîtrisés, saisis à la main
-│   └── metiers.json             ← codes ROME suivis : M1718 principal, M1703 et E1112 voisins
+│   ├── metiers.json             ← codes ROME suivis : M1718 principal, M1703 et E1112 voisins
+│   └── formation.json           ← cours du M2 et outils qu'ils couvrent, d'après l'intitulé
 │
 ├── scripts/
-│   ├── collecte/                ← récupérer les données
+│   ├── collecte/                ← récupérer les données (écrit dans data/brut/ seulement)
 │   │   ├── test_connexion.py    ← vérifie que les identifiants répondent
-│   │   └── extraction_offres.py ← API → data/brut/
+│   │   ├── extraction_offres.py ← API France Travail → data/brut/
+│   │   └── extraction_entreprises.py ← API Recherche d'entreprises → data/brut/
 │   ├── traitement/              ← mettre en forme, produire le site
 │   │   ├── mise_en_forme.py     ← data/brut/ → data/traite/
+│   │   ├── calculs.py           ← les petites formules (salaires, marge d'erreur…), testées
 │   │   ├── generer_site.py      ← data/traite/ → assets/donnees.js
 │   │   ├── generer_carte.py     ← GeoJSON → carte (lancé une seule fois)
-│   │   └── apercu_cv.py         ← CV PDF → image (quand le CV change)
+│   │   ├── apercu_cv.py         ← CV PDF → image (quand le CV change)
+│   │   └── apercu_partage.py    ← image de partage (si le titre change)
 │   └── outils/
+│       ├── audit.py             ← sécurité, reproductibilité, cohérence, site public
+│       ├── tests_calculs.py     ← vérifie les formules de calculs.py
 │       ├── serveur_local.py     ← sert le site + bouton « mettre à jour »
-│       ├── audit.py             ← sécurité, reproductibilité, cohérence
 │       ├── preparer_rendu.py    ← fabrique le zip du rendu dans rendu/
 │       └── preparer_site_public.py ← extrait le site seul pour sa version en ligne
 │
-└── contexte/
-    └── cm1-seance.md            ← contenu de la séance CM 1
+├── .github/workflows/           ← les automatisations : releve.yml, publier.yml, audit.yml
+├── automatisations/             ← leur mode d'emploi, et les anciennes tâches Claude
+└── contexte/                    ← support du cours : séance CM 1, maquette du M2
+
+Ignorés par git : rendu/ (zip du rendu), sauvegardes/ (copies locales), public/.
 ```
 
 ### Ouvrir le site
